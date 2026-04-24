@@ -1168,6 +1168,91 @@
   }
   .yt-cmd-btn:hover { background: var(--surface2); border-color: var(--border-hover); color: var(--text); }
 
+  /* ── Meta Ads Dashboard ── */
+  .meta-dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .meta-stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; transition: border-color 0.2s; }
+  .meta-stat-card:hover { border-color: var(--border-hover); }
+  .meta-stat-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+  .meta-stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); font-weight: 600; }
+  .meta-stat-value { font-size: 22px; font-weight: 700; margin-top: 4px; color: var(--text); }
+  .meta-campaign-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
+  .meta-campaign-col { background: var(--surface); padding: 20px; }
+  .meta-campaign-col:first-child { border-radius: 12px 0 0 12px; }
+  .meta-campaign-col:last-child { border-radius: 0 12px 12px 0; }
+  .meta-campaign-col-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-dim); font-weight: 600; margin-bottom: 8px; }
+  .meta-campaign-col-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .meta-campaign-col-id { font-size: 11px; font-family: 'SF Mono','Fira Code',monospace; color: var(--text-dim); }
+  .meta-funnel { display: flex; align-items: center; gap: 0; margin-bottom: 24px; }
+  .meta-funnel-step { flex: 1; text-align: center; padding: 16px 8px; background: var(--surface); border: 1px solid var(--border); position: relative; transition: all 0.2s; }
+  .meta-funnel-step:hover { background: var(--surface2); border-color: var(--border-hover); }
+  .meta-funnel-step:first-child { border-radius: 12px 0 0 12px; }
+  .meta-funnel-step:last-child { border-radius: 0 12px 12px 0; }
+  .meta-funnel-step:not(:first-child) { border-left: none; }
+  .meta-funnel-price { font-size: 18px; font-weight: 700; color: var(--text); }
+  .meta-funnel-label { font-size: 10px; color: var(--text-dim); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.8px; }
+  .meta-funnel-arrow { color: var(--text-dim); font-size: 16px; margin: 0 -1px; z-index: 1; flex-shrink: 0; display: flex; align-items: center; justify-content: center; width: 20px; }
+  .meta-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); font-weight: 600; margin-bottom: 16px; }
+  .meta-status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .meta-status-badge.paused { background: rgba(245,158,11,0.12); color: #f59e0b; }
+  .meta-status-badge.active { background: rgba(34,197,94,0.12); color: #22c55e; }
+  .meta-status-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  /* Light theme meta adjustments */
+  body.light-theme .meta-campaign-col { background: var(--surface); }
+  body.light-theme .meta-campaign-bar { background: var(--border); }
+
+  /* ── YouTube Redesign ── */
+  .yt-upload-collapsed { display: flex; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+  .yt-upload-toggle-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 16px; border-radius: 8px;
+    background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2);
+    color: var(--red); font-size: 13px; font-weight: 600;
+    cursor: pointer; white-space: nowrap; flex-shrink: 0;
+    font-family: inherit; transition: all 0.2s;
+  }
+  .yt-upload-toggle-btn:hover { background: rgba(239,68,68,0.14); }
+  .yt-upload-expanded { margin-top: 16px; display: none; }
+  .yt-upload-expanded.open { display: block; }
+  .yt-upload-inline-form { display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+  .yt-upload-inline-form .yt-file-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: 8px;
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text-secondary); font-size: 12px; font-weight: 500;
+    cursor: pointer; white-space: nowrap; flex-shrink: 0; font-family: inherit;
+    transition: all 0.2s;
+  }
+  .yt-upload-inline-form .yt-file-btn:hover { border-color: var(--border-hover); color: var(--text); }
+  .yt-upload-inline-form textarea {
+    flex: 1; min-width: 200px; padding: 8px 12px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); font-size: 12px;
+    font-family: inherit; resize: vertical;
+    transition: border-color 0.2s;
+  }
+  .yt-upload-inline-form textarea:focus { outline: none; border-color: var(--red); }
+  .yt-upload-inline-form .yt-title-inline {
+    flex: 1; min-width: 160px; padding: 8px 12px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); font-size: 12px;
+    font-family: inherit; transition: border-color 0.2s;
+  }
+  .yt-upload-inline-form .yt-title-inline:focus { outline: none; border-color: var(--red); }
+  .yt-channel-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+  .yt-channel-stat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .yt-channel-stat-icon { font-size: 22px; flex-shrink: 0; }
+  .yt-channel-stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); font-weight: 600; }
+  .yt-channel-stat-value { font-size: 20px; font-weight: 700; color: var(--text); margin-top: 2px; }
+  /* Enhanced yt-card stats row */
+  .yt-stats-row { display: flex; gap: 16px; padding: 10px 14px; border-top: 1px solid var(--border); }
+  .yt-stat-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-dim); }
+  .yt-stat-item svg { opacity: 0.5; }
+  .yt-stat-val { font-weight: 600; color: var(--text-secondary); }
+
   /* Responsive */
   @media (max-width: 1100px) {
     .copy-panel { width: 320px; min-width: 320px; padding: 20px 16px; }
@@ -1327,36 +1412,68 @@
         Refresh
       </button>
     </div>
-    <!-- YouTube Upload Zone -->
+    <!-- YouTube Upload Zone (collapsible) -->
     <div class="yt-upload-zone">
-      <div class="upload-dropzone" id="yt-dropzone" onclick="document.getElementById('yt-file-input').click()">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
-        <p id="yt-dropzone-label">Drop video here or click to browse</p>
-        <p class="upload-hint">.mp4, .mov, .webm supported</p>
-        <div id="yt-file-selected" class="upload-selected" style="display:none;"></div>
-        <input type="file" accept="video/*" id="yt-file-input" hidden>
+      <div class="yt-upload-collapsed">
+        <button class="yt-upload-toggle-btn" onclick="toggleYtUpload(this)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+          Upload New Video
+        </button>
+        <span style="font-size:12px;color:var(--text-dim);align-self:center;">Drop a video file to generate YouTube metadata &amp; thumbnail</span>
       </div>
-      <div class="transcript-input">
-        <label>Transcript</label>
-        <textarea id="yt-transcript" rows="8" placeholder="Paste your video transcript here..."></textarea>
+      <div class="yt-upload-expanded" id="yt-upload-form">
+        <div class="yt-upload-inline-form">
+          <button class="yt-file-btn" onclick="document.getElementById('yt-file-input').click()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+            <span id="yt-dropzone-label">Choose file</span>
+          </button>
+          <input type="file" accept="video/*" id="yt-file-input" hidden onchange="document.getElementById('yt-dropzone-label').textContent = this.files[0]?.name || 'Choose file'">
+          <div id="yt-file-selected" class="upload-selected" style="display:none;"></div>
+          <textarea id="yt-transcript" rows="3" placeholder="Paste transcript here (optional)..."></textarea>
+          <input type="text" id="yt-title" class="yt-title-inline" placeholder="Title (AI generates if empty)">
+          <button class="process-btn" style="margin-bottom:0;flex-shrink:0;" onclick="processYouTube()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:5px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Process
+          </button>
+        </div>
+        <div id="yt-command-panel" style="display:none;margin-top:12px;" class="yt-command-panel">
+          <div class="cmd-label">Run these commands</div>
+          <pre class="yt-cmd-code" id="yt-cmd-code"></pre>
+          <div class="yt-cmd-actions">
+            <button class="yt-cmd-btn" onclick="copyYtCommands()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copy Commands
+            </button>
+            <button class="yt-cmd-btn" onclick="downloadTranscript()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download Transcript
+            </button>
+          </div>
+        </div>
       </div>
-      <input type="text" id="yt-title" class="yt-title-input" placeholder="Title (AI generates if empty)">
-      <button class="process-btn" onclick="processYouTube()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:6px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        Process Video
-      </button>
-      <div id="yt-command-panel" style="display:none;" class="yt-command-panel">
-        <div class="cmd-label">Run these commands</div>
-        <pre class="yt-cmd-code" id="yt-cmd-code"></pre>
-        <div class="yt-cmd-actions">
-          <button class="yt-cmd-btn" onclick="copyYtCommands()">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-            Copy Commands
-          </button>
-          <button class="yt-cmd-btn" onclick="downloadTranscript()">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Download Transcript
-          </button>
+    </div>
+
+    <!-- YouTube Channel Stats -->
+    <div class="yt-channel-stats" id="yt-channel-stats">
+      <div class="yt-channel-stat-card">
+        <div class="yt-channel-stat-icon">🎬</div>
+        <div>
+          <div class="yt-channel-stat-label">Total Videos</div>
+          <div class="yt-channel-stat-value" id="yt-total-videos">—</div>
+        </div>
+      </div>
+      <div class="yt-channel-stat-card">
+        <div class="yt-channel-stat-icon">👁️</div>
+        <div>
+          <div class="yt-channel-stat-label">Total Views</div>
+          <div class="yt-channel-stat-value" id="yt-total-views">—</div>
+        </div>
+      </div>
+      <div class="yt-channel-stat-card">
+        <div class="yt-channel-stat-icon">👥</div>
+        <div>
+          <div class="yt-channel-stat-label">Subscribers</div>
+          <div class="yt-channel-stat-value" id="yt-subscribers">—</div>
         </div>
       </div>
     </div>
@@ -1381,60 +1498,96 @@
       </h2>
     </div>
 
-    <div class="meta-info-panel">
-      <h3>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        Campaign Details
-      </h3>
-      <div class="meta-field">
-        <span class="meta-field-label">Campaign</span>
-        <span class="meta-field-value">Open Audiences — Content Engine</span>
+    <!-- ── Meta Stat Cards ── -->
+    <div class="meta-dashboard">
+      <!-- Daily Budget -->
+      <div class="meta-stat-card">
+        <div class="meta-stat-icon" style="background:rgba(34,197,94,0.12);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="meta-stat-label">Daily Budget</div>
+        <div class="meta-stat-value" style="color:#22c55e;">$10.00</div>
       </div>
-      <div class="meta-field">
-        <span class="meta-field-label">Campaign ID</span>
-        <span class="meta-field-value mono">120244840410950030</span>
+      <!-- Audience -->
+      <div class="meta-stat-card">
+        <div class="meta-stat-icon" style="background:rgba(59,130,246,0.12);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <div class="meta-stat-label">Audience</div>
+        <div class="meta-stat-value" style="font-size:13px;color:#3b82f6;line-height:1.3;margin-top:6px;">US Newsletter Owners, 25–55</div>
       </div>
-      <div class="meta-field">
-        <span class="meta-field-label">Ad Set</span>
-        <span class="meta-field-value">Newsletter Owners — US — $10/day</span>
+      <!-- Destination -->
+      <div class="meta-stat-card">
+        <div class="meta-stat-icon" style="background:rgba(239,68,68,0.12);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </div>
+        <div class="meta-stat-label">Destination</div>
+        <div class="meta-stat-value" style="font-size:14px;margin-top:6px;">
+          <a href="https://audiencereality.com" target="_blank" style="color:#ef4444;text-decoration:none;font-weight:700;">audiencereality.com ↗</a>
+        </div>
       </div>
-      <div class="meta-field">
-        <span class="meta-field-label">Ad Set ID</span>
-        <span class="meta-field-value mono">120244840412120030</span>
-      </div>
-      <div class="meta-field">
-        <span class="meta-field-label">Pixel</span>
-        <span class="meta-field-value mono">1614838133195241</span>
-      </div>
-      <div class="meta-field">
-        <span class="meta-field-label">Destination</span>
-        <span class="meta-field-value"><a href="https://audiencereality.com" target="_blank" style="color:var(--lime);text-decoration:none;">audiencereality.com</a></span>
-      </div>
-      <div class="meta-field">
-        <span class="meta-field-label">Account</span>
-        <span class="meta-field-value">Open Audiences <span class="meta-field-value mono" style="display:inline;">(act_790713033335386)</span></span>
-      </div>
-    </div>
-
-    <div class="meta-status-row">
-      <div class="meta-status-card">
-        <div class="meta-status-label">Budget</div>
-        <div class="meta-status-value">$10<span style="font-size:14px;color:var(--text-dim)">/day</span></div>
-        <div class="meta-status-sub">Daily cap</div>
-      </div>
-      <div class="meta-status-card">
-        <div class="meta-status-label">Target</div>
-        <div class="meta-status-value" style="font-size:15px;color:var(--text-secondary);">US Newsletter Owners</div>
-        <div class="meta-status-sub">Open audiences</div>
-      </div>
-      <div class="meta-status-card">
-        <div class="meta-status-label">Creatives Pushed</div>
-        <div class="meta-status-value" id="meta-creative-count">—</div>
-        <div class="meta-status-sub">From log</div>
+      <!-- Status -->
+      <div class="meta-stat-card">
+        <div class="meta-stat-icon" style="background:rgba(245,158,11,0.12);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="meta-stat-label">Status</div>
+        <div style="margin-top:8px;">
+          <span class="meta-status-badge paused">Paused</span>
+        </div>
       </div>
     </div>
 
-    <div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-dim);font-weight:600;margin-bottom:16px;">Pushed Creatives</div>
+    <!-- ── Campaign Bar ── -->
+    <div class="meta-campaign-bar">
+      <div class="meta-campaign-col">
+        <div class="meta-campaign-col-label">Campaign</div>
+        <div class="meta-campaign-col-title">Open Audiences — Content Engine</div>
+        <div class="meta-campaign-col-id">ID: 120244840410950030</div>
+      </div>
+      <div class="meta-campaign-col">
+        <div class="meta-campaign-col-label">Ad Set</div>
+        <div class="meta-campaign-col-title">Newsletter Owners — US — $10/day</div>
+        <div class="meta-campaign-col-id">ID: 120244840412120030</div>
+      </div>
+      <div class="meta-campaign-col">
+        <div class="meta-campaign-col-label">Tracking</div>
+        <div class="meta-campaign-col-title">Pixel: <span style="font-family:monospace;font-size:12px;">1614838133195241</span></div>
+        <div class="meta-campaign-col-id">Account: act_790713033335386</div>
+      </div>
+    </div>
+
+    <!-- ── Funnel Visualization ── -->
+    <div class="meta-section-title">Conversion Funnel — AudienceReality.com</div>
+    <div class="meta-funnel">
+      <div class="meta-funnel-step">
+        <div class="meta-funnel-price">$27</div>
+        <div class="meta-funnel-label">Report</div>
+      </div>
+      <div class="meta-funnel-arrow">›</div>
+      <div class="meta-funnel-step">
+        <div class="meta-funnel-price">$17</div>
+        <div class="meta-funnel-label">Order Bump</div>
+      </div>
+      <div class="meta-funnel-arrow">›</div>
+      <div class="meta-funnel-step">
+        <div class="meta-funnel-price">$97</div>
+        <div class="meta-funnel-label">Upsell</div>
+      </div>
+      <div class="meta-funnel-arrow">›</div>
+      <div class="meta-funnel-step">
+        <div class="meta-funnel-price">$497<span style="font-size:11px;font-weight:400;color:var(--text-dim)">/mo</span></div>
+        <div class="meta-funnel-label">Monthly</div>
+      </div>
+      <div class="meta-funnel-arrow">›</div>
+      <div class="meta-funnel-step">
+        <div class="meta-funnel-price">$4,997<span style="font-size:11px;font-weight:400;color:var(--text-dim)">/yr</span></div>
+        <div class="meta-funnel-label">Annual</div>
+      </div>
+    </div>
+
+    <!-- ── Pushed Creatives ── -->
+    <div class="meta-section-title">Pushed Creatives <span id="meta-creative-count" style="color:var(--text-secondary);font-weight:400;text-transform:none;letter-spacing:0;font-size:12px;"></span></div>
     <div id="meta-ads-list">
       <div class="empty-state">
         <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
@@ -1847,21 +2000,42 @@ async function loadYouTubePosts() {
     return;
   }
 
+  // Update channel stats counter
+  document.getElementById('yt-total-videos').textContent = allPosts.length || '—';
+
   grid.innerHTML = '';
   for (const v of allPosts) {
     const card = document.createElement('div');
     card.className = 'yt-card';
     const tags = (v.tags || []).slice(0, 6).map(t => `<span class="yt-tag">${escHtml(t)}</span>`).join('');
     const thumb = v.thumbnail_url || v.thumbnail || '';
+    const views = v.views != null ? Number(v.views).toLocaleString() : '—';
+    const likes = v.likes != null ? Number(v.likes).toLocaleString() : '—';
+    const comments = v.comments != null ? Number(v.comments).toLocaleString() : '—';
+    const uploadDate = (v.upload_date || v.generated_at) ? new Date(v.upload_date || v.generated_at).toLocaleDateString() : '';
     card.innerHTML = `
       <div class="yt-thumb">${thumb ? `<img src="${escHtml(thumb)}" alt="thumbnail" />` : '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>'}</div>
       <div class="yt-body">
         <div class="yt-title">${escHtml(v.title || 'Untitled')}</div>
+        ${uploadDate ? `<div class="post-date" style="margin-bottom:8px;">${uploadDate}</div>` : ''}
         <div class="yt-desc">${escHtml(v.description || '')}</div>
         ${tags ? `<div class="yt-tags">${tags}</div>` : ''}
-        <div class="yt-footer">
-          <span class="post-date">${v.upload_date || v.generated_at ? new Date(v.upload_date || v.generated_at).toLocaleDateString() : ''}</span>
-          ${v.url || v.video_url ? `<a class="download-btn" href="${escHtml(v.url || v.video_url)}" target="_blank" style="text-decoration:none;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> Watch</a>` : ''}
+        <div class="yt-footer" style="margin-top:8px;">
+          ${v.url || v.video_url ? `<a class="download-btn" href="${escHtml(v.url || v.video_url)}" target="_blank" style="text-decoration:none;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> Watch on YouTube</a>` : ''}
+        </div>
+      </div>
+      <div class="yt-stats-row">
+        <div class="yt-stat-item">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span class="yt-stat-val">${views}</span> Views
+        </div>
+        <div class="yt-stat-item">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>
+          <span class="yt-stat-val">${likes}</span> Likes
+        </div>
+        <div class="yt-stat-item">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          <span class="yt-stat-val">${comments}</span> Comments
         </div>
       </div>
     `;
@@ -1889,12 +2063,12 @@ async function loadMetaAds() {
   const countEl = document.getElementById('meta-creative-count');
 
   if (!log || (Array.isArray(log) && log.length === 0)) {
-    countEl.textContent = '0';
+    countEl.textContent = '(0)';
     return;
   }
 
   const items = Array.isArray(log) ? log : [log];
-  countEl.textContent = items.length;
+  countEl.textContent = `(${items.length})`;
 
   list.innerHTML = '';
   const grid = document.createElement('div');
@@ -2354,6 +2528,14 @@ function renderCalendar() {
     });
   });
 })();
+
+function toggleYtUpload(btn) {
+  const form = document.getElementById('yt-upload-form');
+  const isOpen = form.classList.toggle('open');
+  btn.innerHTML = isOpen
+    ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg> Hide Form`
+    : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg> Upload New Video`;
+}
 
 function processYouTube() {
   const fileInput = document.getElementById('yt-file-input');
