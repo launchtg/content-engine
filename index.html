@@ -937,159 +937,251 @@
     color: var(--text);
     letter-spacing: -0.3px;
   }
-  /* Calendar — proper grid: time rows × day columns */
-  .cal-grid {
-    display: grid;
-    grid-template-columns: 80px repeat(7, 1fr);
-    grid-auto-rows: auto;
-    gap: 1px;
-    background: var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    min-height: calc(100vh - 220px);
-  }
-  /* Corner cell (top-left) */
-  .cal-corner {
-    background: var(--surface2);
-    min-height: 58px;
-  }
-  /* Day header cells */
-  .cal-day-hdr {
-    background: var(--surface2);
-    padding: 14px 8px 12px;
-    text-align: center;
-    min-height: 58px;
+  /* ── Calendar: Google Calendar / Apple Calendar style ── */
+  .cal-outer-wrapper {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
+    height: calc(100vh - 160px);
   }
-  .cal-day-hdr.today {
-    background: rgba(255,59,59,0.08);
+  .cal-container {
+    position: relative;
+    display: flex;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex: 1;
+    border: 1px solid var(--border);
+    border-radius: 0 0 14px 14px;
+    background: var(--surface);
   }
-  .cal-hdr-name {
+  .cal-time-gutter {
+    width: 60px;
+    min-width: 60px;
+    flex-shrink: 0;
+    position: relative;
+    border-right: 1px solid var(--border);
+  }
+  .cal-time-mark {
+    position: absolute;
+    right: 8px;
     font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    font-weight: 500;
     color: var(--text-dim);
+    transform: translateY(-50%);
+    font-variant-numeric: tabular-nums;
   }
-  .cal-hdr-num {
-    font-size: 22px;
+  .cal-days-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    flex: 1;
+    position: relative;
+  }
+  .cal-day-column {
+    position: relative;
+    border-right: 1px solid var(--border);
+  }
+  .cal-day-column:last-child { border-right: none; }
+  .cal-day-column.today { background: rgba(255, 59, 59, 0.03); }
+  .cal-header-row {
+    display: grid;
+    grid-template-columns: 60px repeat(7, 1fr);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: 14px 14px 0 0;
+  }
+  .cal-header-cell {
+    padding: 14px 8px;
+    text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .cal-header-cell:last-child { border-right: none; }
+  .cal-header-day {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-dim);
+    font-weight: 600;
+  }
+  .cal-header-num {
+    font-size: 24px;
     font-weight: 800;
     color: var(--text);
-    letter-spacing: -0.5px;
+    margin-top: 2px;
     line-height: 1;
+    display: block;
   }
-  .cal-day-hdr.today .cal-hdr-name {
-    color: var(--accent);
-  }
-  .cal-day-hdr.today .cal-hdr-num {
-    color: var(--accent);
-  }
-  /* Time label cells */
-  .cal-time-label {
-    background: var(--surface2);
-    padding: 0 10px;
-    display: flex;
+  .cal-header-cell.today .cal-header-num {
+    color: #FF3B3B;
+    background: rgba(255,59,59,0.1);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: inline-flex;
     align-items: center;
-    justify-content: flex-end;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    color: var(--text-dim);
-    font-variant-numeric: tabular-nums;
-    min-height: 90px;
-  }
-  /* Content cells */
-  .cal-cell {
-    background: var(--surface);
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
     justify-content: center;
-    min-height: 90px;
-    position: relative;
-    transition: background 0.15s ease;
+    font-size: 20px;
+    margin-top: 4px;
   }
-  .cal-cell:hover {
-    background: var(--surface2);
+  .cal-gridline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border);
+    pointer-events: none;
   }
-  .cal-cell.today {
-    background: rgba(255,59,59,0.04);
+  .cal-now-line {
+    position: absolute;
+    left: -6px;
+    right: 0;
+    height: 2px;
+    background: #FF3B3B;
+    z-index: 5;
+    pointer-events: none;
   }
-  .cal-cell.today:hover {
-    background: rgba(255,59,59,0.08);
+  .cal-now-dot {
+    position: absolute;
+    left: -5px;
+    top: -4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #FF3B3B;
   }
-  .cal-cell.past {
-    opacity: 0.65;
-  }
-  /* Card inside each cell */
-  .cal-cell-card {
-    border-left: 4px solid;
+  .cal-event {
+    position: absolute;
+    left: 4px;
+    right: 4px;
     border-radius: 8px;
-    padding: 8px 10px;
-    background: var(--bg);
-    height: 100%;
-    min-height: 70px;
+    padding: 6px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    overflow: hidden;
+    z-index: 2;
+    border-left: 4px solid;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    gap: 4px;
-    cursor: default;
-    transition: box-shadow 0.15s ease;
+    gap: 2px;
+    box-sizing: border-box;
   }
-  .cal-cell:hover .cal-cell-card {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  .cal-event:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    z-index: 3;
   }
-  .cal-card-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 4px;
-  }
-  .cal-card-label {
-    font-size: 11px;
+  .cal-event-title {
     font-weight: 700;
-    color: var(--text);
+    font-size: 11px;
     display: flex;
     align-items: center;
     gap: 5px;
-    line-height: 1.3;
-    letter-spacing: -0.1px;
-    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cal-event-time {
+    font-size: 10px;
+    opacity: 0.7;
+    font-weight: 500;
+  }
+  .cal-event-preview {
+    font-size: 10px;
+    opacity: 0.6;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  .cal-card-platform {
-    color: var(--text-dim);
-    flex-shrink: 0;
-    opacity: 0.7;
+  .cal-event-platform {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    opacity: 0.5;
+  }
+  .cal-event.past { opacity: 0.5; }
+  /* Detail panel — slides in from right */
+  .cal-detail-panel {
+    position: fixed;
+    top: 0;
+    right: -420px;
+    width: 400px;
+    height: 100vh;
+    background: var(--bg);
+    border-left: 1px solid var(--border);
+    z-index: 200;
+    transition: right 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    overflow-y: auto;
+    box-shadow: -8px 0 32px rgba(0,0,0,0.2);
+  }
+  .cal-detail-panel.open { right: 0; }
+  .cal-detail-header {
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .cal-detail-title {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+  }
+  .cal-detail-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-secondary);
+    cursor: pointer;
     display: flex;
     align-items: center;
-  }
-  .cal-card-preview {
-    font-size: 10px;
-    color: var(--text-secondary);
-    line-height: 1.4;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-  }
-  .cal-card-status {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
+    justify-content: center;
+    transition: all 0.15s;
     flex-shrink: 0;
-    align-self: flex-start;
-    margin-top: 2px;
   }
-  .cal-card-status.done { background: #22c55e; }
-  .cal-card-status.upcoming { background: #71717a; }
-  .cal-card-status.failed { background: #ef4444; }
+  .cal-detail-close:hover { background: var(--surface2); color: var(--text); }
+  .cal-detail-body { padding: 20px 24px; }
+  .cal-detail-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+  }
+  .cal-detail-row:last-child { border-bottom: none; }
+  .cal-detail-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    font-weight: 600;
+    margin-top: 20px;
+    margin-bottom: 8px;
+  }
+  .cal-detail-preview {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+    white-space: pre-wrap;
+  }
+  .cal-detail-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .cal-detail-status.done { background: rgba(34,197,94,0.1); color: #22c55e; }
+  .cal-detail-status.upcoming { background: rgba(156,163,175,0.1); color: #9ca3af; }
 
   /* YouTube upload zone */
   .yt-upload-zone {
@@ -1318,17 +1410,17 @@
     .image-grid { grid-template-columns: 1fr; }
     .posts-grid { grid-template-columns: 1fr; }
     /* Calendar responsive */
-    .cal-grid {
-      grid-template-columns: 0px repeat(7, 1fr);
-      min-height: auto;
-    }
-    .cal-time-label { display: none; }
-    .cal-hdr-name { font-size: 9px; }
-    .cal-hdr-num { font-size: 16px; }
-    .cal-cell { padding: 4px; min-height: 70px; }
-    .cal-cell-card { padding: 6px 6px; min-height: 58px; }
-    .cal-card-label { font-size: 9px; }
-    .cal-card-preview { display: none; }
+    .cal-outer-wrapper { height: auto; }
+    .cal-container { height: 80vh; }
+    .cal-header-row { grid-template-columns: 44px repeat(1, 1fr); }
+    .cal-days-container { grid-template-columns: repeat(1, 1fr); }
+    .cal-time-gutter { width: 44px; min-width: 44px; }
+    .cal-header-cell { padding: 10px 4px; }
+    .cal-header-num { font-size: 18px; }
+    .cal-event { padding: 4px 6px; }
+    .cal-event-time, .cal-event-preview { display: none; }
+    .cal-detail-panel { width: 100%; right: -100%; }
+    .cal-detail-panel.open { right: 0; }
     /* Meta responsive */
     .meta-dashboard { grid-template-columns: repeat(2, 1fr); }
     .meta-campaign-bar { grid-template-columns: 1fr; }
@@ -1350,8 +1442,7 @@
   @media (max-width: 480px) {
     .side-nav-brand { padding: 12px 16px; }
     .side-nav-item { padding: 8px 10px; font-size: 12px; }
-    .cal-grid { gap: 1px; }
-    .cal-card-label { font-size: 10px; }
+
     .meta-dashboard { grid-template-columns: 1fr; }
     .meta-funnel-step { min-width: 100%; flex: 1 1 100%; }
     .meta-funnel-step:first-child,
@@ -1362,10 +1453,9 @@
     .section-page-header { flex-direction: column; align-items: flex-start; gap: 10px; }
   }
   @media (min-width: 901px) and (max-width: 1200px) {
-    .cal-grid { grid-template-columns: 70px repeat(7, 1fr); }
-    .cal-cell { padding: 6px; min-height: 80px; }
-    .cal-card-label { font-size: 10px; }
-    .cal-card-preview { font-size: 9px; }
+    .cal-header-row { grid-template-columns: 60px repeat(3, 1fr); }
+    .cal-days-container { grid-template-columns: repeat(3, 1fr); }
+    .cal-event { font-size: 10px; }
   }
 </style>
 </head>
@@ -1748,8 +1838,24 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
     </div>
-    <div class="calendar-grid" id="calendar-grid"></div>
+    <div class="cal-outer-wrapper" id="cal-outer-wrapper">
+      <div class="cal-header-row" id="cal-header-row"></div>
+      <div class="cal-container" id="cal-container">
+        <div class="cal-time-gutter" id="cal-time-gutter"></div>
+        <div class="cal-days-container" id="cal-days-container"></div>
+      </div>
+    </div>
   </div>
+</div>
+<!-- Calendar detail panel -->
+<div class="cal-detail-panel" id="cal-detail-panel">
+  <div class="cal-detail-header">
+    <div class="cal-detail-title" id="cal-detail-title"></div>
+    <button class="cal-detail-close" onclick="closeCalDetail()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="cal-detail-body" id="cal-detail-body"></div>
 </div>
 
 </div><!-- end main-content -->
@@ -2450,24 +2556,38 @@ async function loadZipJs() {
 }
 
 // ───────────────────────────────────────────────
-// Calendar
+// Calendar — Google Calendar style
 // ───────────────────────────────────────────────
 let calWeekOffset = 0;
 
+const HOUR_HEIGHT = 70;
+const START_HOUR = 5;
+const END_HOUR = 18;
+const TOTAL_HOURS = END_HOUR - START_HOUR;
+
+const META_ICON_SVG = '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>';
+const X_ICON_SVG = '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>';
+
 const SCHEDULE = [
-  { timeH: 5, timeM: 0, label: 'Image Generation', color: '#3B82F6', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>' },
-  { timeH: 8, timeM: 0, label: 'Ad Copy', color: '#8B5CF6', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>', platform: '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>' },
-  { timeH: 8, timeM: 30, label: 'Meta Ad Push', color: '#1877F2', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M12 8v8"/></svg>', platform: '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>' },
-  { timeH: 9, timeM: 0, label: 'Value Post', color: '#FF3B3B', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>', platform: '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>', isValuePost: true },
-  { timeH: 9, timeM: 30, label: 'Creative Post', color: '#3B82F6', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>', platform: '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>' },
-  { timeH: 13, timeM: 0, label: 'Value Post', color: '#FF3B3B', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>', platform: '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>', isValuePost: true },
-  { timeH: 17, timeM: 0, label: 'Value Post', color: '#FF3B3B', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>', platform: '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>', isValuePost: true },
+  { timeH: 5, timeM: 0, duration: 30, label: 'Image Generation', color: '#3B82F6', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>', platform: null, type: 'image-gen' },
+  { timeH: 8, timeM: 0, duration: 30, label: 'Ad Copy', color: '#8B5CF6', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>', platform: null, type: 'ad-copy', platformType: 'meta' },
+  { timeH: 8, timeM: 30, duration: 20, label: 'Meta Ad Push', color: '#1877F2', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>', platform: null, type: 'meta-push', platformType: 'meta' },
+  { timeH: 9, timeM: 0, duration: 25, label: 'Value Post', color: '#FF3B3B', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>', platform: null, type: 'value-post', isValuePost: true, platformType: 'x' },
+  { timeH: 9, timeM: 30, duration: 25, label: 'Creative Post', color: '#3B82F6', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>', platform: null, type: 'creative-post', platformType: 'x' },
+  { timeH: 13, timeM: 0, duration: 25, label: 'Value Post', color: '#FF3B3B', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>', platform: null, type: 'value-post', isValuePost: true, platformType: 'x' },
+  { timeH: 17, timeM: 0, duration: 25, label: 'Value Post', color: '#FF3B3B', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>', platform: null, type: 'value-post', isValuePost: true, platformType: 'x' },
 ];
+
+function getEventTop(h, m) {
+  return ((h - START_HOUR) + m / 60) * HOUR_HEIGHT;
+}
+function getEventHeight(duration) {
+  return (duration / 60) * HOUR_HEIGHT;
+}
 
 function getWeekDates(offset) {
   const now = new Date();
-  const day = now.getDay(); // 0=Sun
-  // Start of current week (Monday)
+  const day = now.getDay();
   const monday = new Date(now);
   monday.setDate(now.getDate() - (day === 0 ? 6 : day - 1) + offset * 7);
   monday.setHours(0, 0, 0, 0);
@@ -2481,10 +2601,9 @@ function getWeekDates(offset) {
 }
 
 function formatWeekLabel(days) {
-  const opts = { month: 'short', day: 'numeric' };
-  const first = days[0].toLocaleDateString('en-US', opts);
+  const first = days[0].toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   const last = days[6].toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  return `${first} – ${last}`;
+  return `${first} \u2013 ${last}`;
 }
 
 function calNavWeek(dir) {
@@ -2492,87 +2611,183 @@ function calNavWeek(dir) {
   renderCalendar();
 }
 
+function formatTime(h, m) {
+  const suffix = h >= 12 ? 'PM' : 'AM';
+  const hour = h > 12 ? h - 12 : (h === 0 ? 12 : h);
+  return hour + (m > 0 ? ':' + String(m).padStart(2,'0') : '') + '\u00a0' + suffix;
+}
+
 function renderCalendar() {
   const days = getWeekDates(calWeekOffset);
   document.getElementById('cal-week-label').textContent = formatWeekLabel(days);
 
-  const grid = document.getElementById('calendar-grid');
-  grid.innerHTML = '';
-  grid.className = 'cal-grid';
-
   const now = new Date();
   const todayStr = now.toDateString();
   const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const totalHeight = TOTAL_HOURS * HOUR_HEIGHT;
 
-  // Value posts
   const vpData = window.__VALUE_POSTS_DATA;
   const unpostedVp = vpData ? (vpData.posts || []).filter(p => !p.posted) : [];
   let vpIdx = 0;
 
-  // Header row - corner cell
+  // Header row
+  const headerRow = document.getElementById('cal-header-row');
+  headerRow.innerHTML = '';
   const corner = document.createElement('div');
-  corner.className = 'cal-corner';
-  grid.appendChild(corner);
-
-  // Header row - day cells
+  corner.className = 'cal-header-cell';
+  corner.style.cssText = 'border-right:1px solid var(--border);';
+  headerRow.appendChild(corner);
   days.forEach((date, di) => {
     const isToday = date.toDateString() === todayStr;
-    const hdr = document.createElement('div');
-    hdr.className = `cal-day-hdr${isToday ? ' today' : ''}`;
-    hdr.innerHTML = `<div class="cal-hdr-name">${dayNames[di]}</div><div class="cal-hdr-num">${date.getDate()}</div>`;
-    grid.appendChild(hdr);
+    const cell = document.createElement('div');
+    cell.className = 'cal-header-cell' + (isToday ? ' today' : '');
+    cell.innerHTML = `<div class="cal-header-day">${dayNames[di]}</div><div class="cal-header-num">${date.getDate()}</div>`;
+    headerRow.appendChild(cell);
   });
 
-  // Time rows
-  SCHEDULE.forEach(sch => {
-    // Time label cell
-    const timeStr = formatTime(sch.timeH, sch.timeM);
-    const timeCell = document.createElement('div');
-    timeCell.className = 'cal-time-label';
-    timeCell.textContent = timeStr;
-    grid.appendChild(timeCell);
+  // Time gutter
+  const gutter = document.getElementById('cal-time-gutter');
+  gutter.innerHTML = '';
+  gutter.style.height = totalHeight + 'px';
+  for (let h = START_HOUR; h <= END_HOUR; h++) {
+    const mark = document.createElement('div');
+    mark.className = 'cal-time-mark';
+    mark.style.top = ((h - START_HOUR) * HOUR_HEIGHT) + 'px';
+    const label = h === 0 ? '12 AM' : h < 12 ? h + ' AM' : h === 12 ? '12 PM' : (h - 12) + ' PM';
+    mark.textContent = label;
+    gutter.appendChild(mark);
+  }
 
-    // Day cells for this time slot
-    days.forEach((date) => {
-      const isToday = date.toDateString() === todayStr;
+  // Day columns
+  const daysContainer = document.getElementById('cal-days-container');
+  daysContainer.innerHTML = '';
+  daysContainer.style.height = totalHeight + 'px';
+
+  days.forEach((date, di) => {
+    const isToday = date.toDateString() === todayStr;
+    const col = document.createElement('div');
+    col.className = 'cal-day-column' + (isToday ? ' today' : '');
+    col.style.height = totalHeight + 'px';
+
+    // Hour gridlines
+    for (let h = START_HOUR; h <= END_HOUR; h++) {
+      const line = document.createElement('div');
+      line.className = 'cal-gridline';
+      line.style.top = ((h - START_HOUR) * HOUR_HEIGHT) + 'px';
+      col.appendChild(line);
+    }
+
+    // Now indicator
+    if (isToday) {
+      const nowH = now.getHours(), nowM = now.getMinutes();
+      if (nowH >= START_HOUR && nowH < END_HOUR) {
+        const nowLine = document.createElement('div');
+        nowLine.className = 'cal-now-line';
+        nowLine.style.top = getEventTop(nowH, nowM) + 'px';
+        nowLine.innerHTML = '<div class="cal-now-dot"></div>';
+        col.appendChild(nowLine);
+      }
+    }
+
+    // Events
+    SCHEDULE.forEach((sch) => {
       const slotDate = new Date(date);
       slotDate.setHours(sch.timeH, sch.timeM, 0, 0);
       const isPast = slotDate < now;
+      const top = getEventTop(sch.timeH, sch.timeM);
+      const height = Math.max(getEventHeight(sch.duration), 26);
 
-      const cell = document.createElement('div');
-      cell.className = `cal-cell${isToday ? ' today' : ''}${isPast ? ' past' : ''}`;
-
-      // Get preview for value posts (future only)
-      let preview = '';
-      if (sch.isValuePost && !isPast && vpIdx < unpostedVp.length) {
-        preview = (unpostedVp[vpIdx].text || '').substring(0, 55) + '...';
-        vpIdx++;
+      let vpText = '';
+      if (sch.isValuePost) {
+        if (!isPast && vpIdx < unpostedVp.length) {
+          vpText = unpostedVp[vpIdx].text || '';
+          if (di === 0) vpIdx++;
+        } else if (isPast && vpData) {
+          const posted = (vpData.posts || []).filter(p => p.posted);
+          if (posted.length > 0) vpText = posted[0].text || '';
+        }
       }
 
-      // Build the card
-      const card = document.createElement('div');
-      card.className = 'cal-cell-card';
-      card.style.borderLeftColor = sch.color;
-      card.innerHTML = `
-        <div class="cal-card-top">
-          <span class="cal-card-label">${sch.icon} ${sch.label}</span>
-          ${sch.platform ? '<span class="cal-card-platform">' + sch.platform + '</span>' : ''}
-        </div>
-        ${preview ? '<div class="cal-card-preview">' + escHtml(preview) + '</div>' : ''}
-        <div class="cal-card-status ${isPast ? 'done' : 'upcoming'}"></div>
-      `;
+      const hex = sch.color;
+      const r = parseInt(hex.slice(1,3),16);
+      const g = parseInt(hex.slice(3,5),16);
+      const b = parseInt(hex.slice(5,7),16);
+      const bg = `rgba(${r},${g},${b},0.12)`;
+      const platformIcon = sch.platformType === 'meta' ? META_ICON_SVG : sch.platformType === 'x' ? X_ICON_SVG : '';
 
-      cell.appendChild(card);
-      grid.appendChild(cell);
+      const ev = document.createElement('div');
+      ev.className = 'cal-event' + (isPast ? ' past' : '');
+      ev.style.top = top + 'px';
+      ev.style.height = height + 'px';
+      ev.style.borderLeftColor = hex;
+      ev.style.background = bg;
+      ev.style.color = 'var(--text)';
+      ev.innerHTML = `<div class="cal-event-title">${sch.icon}\u00a0${sch.label}</div><div class="cal-event-time">${formatTime(sch.timeH, sch.timeM)}</div>${vpText && height > 50 ? `<div class="cal-event-preview">${escHtml(vpText.substring(0,60))}\u2026</div>` : ''}${platformIcon ? `<div class="cal-event-platform">${platformIcon}</div>` : ''}`;
+
+      const capturedVpText = vpText;
+      ev.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openCalDetail(sch, date, isPast, capturedVpText);
+      });
+      col.appendChild(ev);
     });
+
+    daysContainer.appendChild(col);
   });
+
+  // Scroll to 7 AM
+  const container = document.getElementById('cal-container');
+  if (container) container.scrollTop = getEventTop(7, 0) - 20;
 }
 
-function formatTime(h, m) {
-  const suffix = h >= 12 ? 'PM' : 'AM';
-  const hour = h > 12 ? h - 12 : (h === 0 ? 12 : h);
-  return hour + ':' + String(m).padStart(2, '0') + ' ' + suffix;
+function openCalDetail(sch, date, isPast, vpText) {
+  const panel = document.getElementById('cal-detail-panel');
+  const titleEl = document.getElementById('cal-detail-title');
+  const body = document.getElementById('cal-detail-body');
+
+  titleEl.textContent = sch.label;
+  const dateStr = date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+  const statusClass = isPast ? 'done' : 'upcoming';
+  const statusLabel = isPast ? 'Completed' : 'Scheduled';
+  const platformIcon = sch.platformType === 'meta' ? META_ICON_SVG : sch.platformType === 'x' ? X_ICON_SVG : '';
+
+  let html = `<div class="cal-detail-row"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${escHtml(dateStr)}</div>`;
+  html += `<div class="cal-detail-row"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${formatTime(sch.timeH, sch.timeM)} &bull; ${sch.duration} min</div>`;
+  html += `<div class="cal-detail-row"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><span class="cal-detail-status ${statusClass}">${statusLabel}</span></div>`;
+
+  if (sch.type === 'value-post') {
+    html += `<div class="cal-detail-row">${X_ICON_SVG}&nbsp;X / Twitter</div>`;
+    if (vpText) {
+      html += `<div class="cal-detail-label">Post Content</div><div class="cal-detail-preview">${escHtml(vpText)}</div>`;
+    }
+    const vpData = window.__VALUE_POSTS_DATA;
+    if (vpData && vpData.source_video) {
+      html += `<div class="cal-detail-label">Source</div><div class="cal-detail-row"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><a href="${escHtml(vpData.source_url||'#')}" target="_blank" style="color:var(--accent);text-decoration:none;">${escHtml(vpData.source_video)}</a></div>`;
+    }
+  } else if (sch.type === 'ad-copy') {
+    html += `<div class="cal-detail-row">${META_ICON_SVG}&nbsp;Meta / Facebook</div>`;
+    html += `<div class="cal-detail-label">Description</div><div class="cal-detail-preview">Opus generates 5 Facebook ad variations based on the current content angle and uploads them to the campaign.</div>`;
+  } else if (sch.type === 'meta-push') {
+    html += `<div class="cal-detail-row">${META_ICON_SVG}&nbsp;Facebook Ads Manager</div>`;
+    html += `<div class="cal-detail-label">Campaign Details</div>`;
+    html += `<div class="cal-detail-row"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>Open Audiences &mdash; Content Engine</div>`;
+    html += `<div class="cal-detail-row"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Newsletter Owners &mdash; US &mdash; $10/day</div>`;
+    html += `<div class="cal-detail-row"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg><a href="https://audiencereality.com" target="_blank" style="color:var(--accent);text-decoration:none;">audiencereality.com</a></div>`;
+  } else if (sch.type === 'image-gen') {
+    html += `<div class="cal-detail-label">Description</div><div class="cal-detail-preview">Generates 18 ad creatives across 6 visual styles and 3 aspect ratios for the current content angle using GPT Image and Gemini.</div>`;
+  } else if (sch.type === 'creative-post') {
+    html += `<div class="cal-detail-row">${X_ICON_SVG}&nbsp;X / Twitter</div>`;
+    html += `<div class="cal-detail-label">Description</div><div class="cal-detail-preview">Posts a generated creative image with ad copy to X/Twitter as part of the daily content cycle.</div>`;
+  }
+
+  body.innerHTML = html;
+  panel.classList.add('open');
 }
+
+function closeCalDetail() {
+  document.getElementById('cal-detail-panel').classList.remove('open');
+}
+
 
 // ───────────────────────────────────────────────
 // YouTube Upload
@@ -2665,7 +2880,19 @@ function downloadTranscript() {
 // ───────────────────────────────────────────────
 // Keyboard shortcuts
 // ───────────────────────────────────────────────
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeLightbox();
+    closeCalDetail();
+  }
+});
+// Click outside detail panel to close
+document.addEventListener('click', (e) => {
+  const panel = document.getElementById('cal-detail-panel');
+  if (panel && panel.classList.contains('open') && !panel.contains(e.target)) {
+    closeCalDetail();
+  }
+});
 
 // ───────────────────────────────────────────────
 // Embedded Data
