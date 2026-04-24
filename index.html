@@ -2190,10 +2190,10 @@ let calWeekOffset = 0;
 const SCHEDULE = [
   { timeH: 5, timeM: 0, label: 'Image Generation', color: '#3B82F6', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>' },
   { timeH: 8, timeM: 0, label: 'Ad Copy (Opus)', color: '#8B5CF6', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>' },
-  { timeH: 9, timeM: 0, label: 'Value Post', color: '#FF3B3B', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>', isValuePost: true },
-  { timeH: 9, timeM: 30, label: 'Creative Post', color: '#3B82F6', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>' },
-  { timeH: 13, timeM: 0, label: 'Value Post', color: '#FF3B3B', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>', isValuePost: true },
-  { timeH: 17, timeM: 0, label: 'Value Post', color: '#FF3B3B', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>', isValuePost: true },
+  { timeH: 9, timeM: 0, label: 'Value Post', color: '#FF3B3B', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>', platform: '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>', isValuePost: true },
+  { timeH: 9, timeM: 30, label: 'Creative Post', color: '#3B82F6', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>', platform: '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>' },
+  { timeH: 13, timeM: 0, label: 'Value Post', color: '#FF3B3B', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>', platform: '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>', isValuePost: true },
+  { timeH: 17, timeM: 0, label: 'Value Post', color: '#FF3B3B', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>', platform: '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>', isValuePost: true },
 ];
 
 function getWeekDates(offset) {
@@ -2282,7 +2282,7 @@ function renderCalendar() {
       slot.style.cssText = `background:${sch.color}18;border-color:${sch.color}30;color:${sch.color};`;
       slot.innerHTML = `
         <div class="cal-slot-time" style="color:${sch.color}99;">${timeStr}</div>
-        <div class="cal-slot-label">${sch.icon} ${sch.label}</div>
+        <div class="cal-slot-label">${sch.icon} ${sch.label}${sch.platform ? ' <span style="opacity:0.5;margin-left:4px;" title="Posts to X">' + sch.platform + '</span>' : ''}</div>
         ${preview ? `<div class="cal-slot-preview" style="color:var(--text-secondary);">${escHtml(preview)}</div>` : ''}
         <div class="cal-status-dot ${statusClass}"></div>
       `;
