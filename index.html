@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Open Audiences — Content Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #09090b;
+    --surface: #111113;
+    --surface2: #18181b;
+    --surface3: #1e1e22;
+    --border: rgba(255,255,255,0.06);
+    --border-hover: rgba(255,255,255,0.12);
+    --text: #fafafa;
+    --text-secondary: #a1a1aa;
+    --text-dim: #52525b;
+    --accent: #FF3B3B;
+    --accent-dim: rgba(255,59,59,0.08);
+    --accent-glow: rgba(255,59,59,0.15);
+    --lime: #CCFF01;
+    --lime-dim: rgba(204,255,1,0.08);
+    --navy: #0A1A3F;
+    --slate: #1F2A44;
+    --blue: #3b82f6;
+    --green: #22c55e;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --glass: rgba(255,255,255,0.03);
+    --glass-border: rgba(255,255,255,0.05);
+    --radius: 10px;
+    --radius-lg: 14px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+    --shadow-glow: 0 0 40px rgba(255,59,59,0.06);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Ambient background glow */
+  .main-content::before {
+    content: '';
+    position: fixed;
+    top: -200px;
+    right: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(255,59,59,0.03) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .main-content::after {
+    content: '';
+    position: fixed;
+    bottom: -300px;
+    left: 200px;
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, rgba(10,26,63,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* App layout */
+  .app-layout { display: flex; min-height: 100vh; }
+
+  /* Side navigation */
+  .side-nav {
+    width: 240px;
+    min-width: 240px;
+    background: linear-gradient(180deg, var(--surface) 0%, rgba(17,17,19,0.95) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    overflow-y: auto;
+    z-index: 100;
+  }
+  .side-nav-brand {
+    padding: 20px 20px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .brand-logo {
+    width: 130px;
+    height: auto;
+    display: block;
+    filter: brightness(1.1);
+  }
+  .side-nav-section { padding: 20px 12px 8px; }
+  .side-nav-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    padding: 0 10px;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .side-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    text-align: left;
+    transition: all 0.15s ease;
+    margin-bottom: 2px;
+  }
+  .side-nav-item:hover { background: var(--glass); color: var(--text); }
+  .side-nav-item.active {
+    background: linear-gradient(135deg, rgba(255,59,59,0.1) 0%, rgba(255,59,59,0.04) 100%);
+    color: var(--accent);
+    box-shadow: inset 0 0 0 1px rgba(255,59,59,0.12);
+    position: relative;
+  }
+  .side-nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 3px;
+    background: var(--accent);
+    border-radius: 0 3px 3px 0;
+    box-shadow: 0 0 8px rgba(255,59,59,0.4);
+  }
+  .side-nav-item svg { opacity: 0.6; flex-shrink: 0; }
+  .side-nav-item.active svg { opacity: 1; }
+  .side-nav-footer {
+    margin-top: auto;
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+  }
+  .side-nav-meta { font-size: 11px; color: var(--text-dim); line-height: 1.6; }
+
+  /* Main content */
+  .main-content { flex: 1; margin-left: 240px; }
+
+  /* Creatives layout */
+  .container { display: flex; min-height: 100vh; }
+
+  /* Copy panel */
+  .copy-panel {
+    width: 380px;
+    min-width: 380px;
+    border-right: 1px solid var(--border);
+    padding: 28px 24px;
+    overflow-y: auto;
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+    position: relative;
+  }
+  .copy-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 1px; height: 100%;
+    background: linear-gradient(180deg, rgba(255,59,59,0.1) 0%, transparent 30%, transparent 70%, rgba(255,59,59,0.05) 100%);
+  }
+  .copy-section { margin-bottom: 28px; }
+  .copy-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .copy-block {
+    position: relative;
+    background: linear-gradient(135deg, var(--surface2) 0%, rgba(24,24,27,0.6) 100%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    padding-right: 44px;
+    font-size: 13px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    backdrop-filter: blur(10px);
+  }
+  .copy-block:hover {
+    border-color: rgba(255,59,59,0.15);
+    background: var(--surface3);
+    box-shadow: 0 0 20px rgba(255,59,59,0.03);
+  }
+  .copy-block .copy-icon {
+    position: absolute;
+    top: 14px; right: 14px;
+    width: 18px; height: 18px;
+    opacity: 0.3;
+    transition: opacity 0.2s;
+  }
+  .copy-block:hover .copy-icon { opacity: 0.7; }
+  .copy-block.copied { border-color: var(--green); }
+  .copy-block.copied::after {
+    content: 'Copied';
+    position: absolute;
+    top: 14px; right: 14px;
+    font-size: 10px;
+    color: var(--green);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .headline-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    font-weight: 500;
+  }
+  .headline-item:hover { border-color: var(--border-hover); background: var(--surface3); }
+  .headline-item.copied { border-color: var(--green); }
+
+  /* Grid */
+  .grid-area {
+    flex: 1;
+    padding: 28px;
+    overflow-y: auto;
+    background: var(--bg);
+  }
+  .grid-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  .size-tabs {
+    display: flex;
+    gap: 4px;
+    background: rgba(17,17,19,0.8);
+    padding: 4px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+  }
+  .size-tab {
+    padding: 7px 18px;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    transition: all 0.2s ease;
+  }
+  .size-tab:hover { color: var(--text-secondary); }
+  .size-tab.active {
+    background: linear-gradient(135deg, var(--surface3) 0%, rgba(30,30,34,0.8) 100%);
+    color: var(--text);
+    box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  .image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+  .image-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+  }
+  .image-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-lg);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: linear-gradient(135deg, rgba(255,59,59,0.03) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .image-card:hover {
+    border-color: rgba(255,59,59,0.15);
+    transform: translateY(-4px) scale(1.005);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 30px rgba(255,59,59,0.04);
+  }
+  .image-card:hover::after { opacity: 1; }
+  .image-card img { width: 100%; display: block; cursor: pointer; transition: opacity 0.2s; }
+  .image-card:hover img { opacity: 0.95; }
+  .image-card-footer {
+    padding: 16px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(180deg, var(--surface) 0%, var(--surface2) 100%);
+    border-top: 1px solid var(--border);
+  }
+  .style-name { font-size: 13px; font-weight: 600; letter-spacing: -0.2px; }
+  .engine-badge {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 5px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    color: var(--text-dim);
+    font-weight: 500;
+    margin-top: 4px;
+    display: inline-block;
+  }
+  .download-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .download-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+  .download-all-btn {
+    padding: 11px 24px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, var(--accent) 0%, #cc2020 100%);
+    color: white;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: inherit;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 0 20px rgba(255,59,59,0.15), 0 2px 8px rgba(0,0,0,0.3);
+    letter-spacing: -0.2px;
+    position: relative;
+    overflow: hidden;
+  }
+  .download-all-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transition: left 0.5s ease;
+  }
+  .download-all-btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(255,59,59,0.25), 0 4px 16px rgba(0,0,0,0.4); }
+  .download-all-btn:hover::before { left: 100%; }
+
+  /* Posts view */
+  .posts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+  }
+  .posts-header h2, .section-h2 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 20px;
+  }
+  .post-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 22px;
+    transition: all 0.2s ease;
+  }
+  .post-card:hover { border-color: var(--border-hover); }
+  .post-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .post-date { font-size: 12px; color: var(--text-dim); }
+  .post-status {
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .post-status.published { background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+  .post-status.failed { background: rgba(239,68,68,0.1); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+  .post-status.pending { background: rgba(245,158,11,0.1); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
+  .post-status.queued { background: rgba(161,161,170,0.1); color: var(--text-dim); border: 1px solid rgba(161,161,170,0.2); }
+  .post-status.next { background: rgba(245,158,11,0.12); color: var(--amber); border: 1px solid rgba(245,158,11,0.25); }
+  .post-caption {
+    font-size: 13px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    margin-bottom: 14px;
+    color: var(--text-secondary);
+  }
+  .post-image {
+    width: 100%;
+    border-radius: var(--radius);
+    margin-bottom: 14px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .post-meta {
+    font-size: 12px;
+    color: var(--text-dim);
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .post-angle-badge {
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--accent-dim);
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .lime-badge {
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--lime-dim);
+    color: var(--lime);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 80px 40px;
+    grid-column: 1/-1;
+  }
+  .empty-state svg { margin-bottom: 20px; opacity: 0.3; }
+  .empty-state-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; color: var(--text-secondary); }
+  .empty-state-sub { font-size: 13px; color: var(--text-dim); }
+
+  /* Section pages */
+  .section-page { padding: 28px 32px; }
+  .section-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 28px;
+    gap: 20px;
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  .stat-chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .stat-chip .stat-num {
+    color: var(--lime);
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  /* Value post cards */
+  .value-post-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 22px;
+    transition: all 0.2s ease;
+  }
+  .value-post-card:hover { border-color: var(--border-hover); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .value-post-card.posted { border-color: rgba(34,197,94,0.15); }
+  .value-post-card.next-up { border-color: rgba(245,158,11,0.2); box-shadow: 0 0 20px rgba(245,158,11,0.05); }
+  .vp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    gap: 12px;
+  }
+  .vp-id { font-size: 11px; color: var(--text-dim); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .vp-text { font-size: 13px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 14px; }
+  .vp-source {
+    font-size: 11px;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .vp-source a { color: var(--lime); text-decoration: none; }
+  .vp-source a:hover { text-decoration: underline; }
+  .vp-posted-at { font-size: 11px; color: var(--green); margin-top: 8px; }
+
+  /* Thread cards */
+  .thread-card {
+    background: linear-gradient(135deg, var(--surface2) 0%, var(--surface) 100%);
+    border: 1px solid rgba(10,26,63,0.4);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .thread-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .thread-tweet {
+    padding: 10px 14px;
+    background: var(--surface3);
+    border-radius: 8px;
+    border-left: 3px solid var(--accent);
+    margin-bottom: 6px;
+    font-size: 12px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    position: relative;
+  }
+  .thread-tweet:last-child { margin-bottom: 0; }
+  .thread-num {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Meta Ads */
+  .meta-info-panel {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--slate) 100%);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    margin-bottom: 28px;
+  }
+  .meta-info-panel h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .meta-field {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    gap: 20px;
+  }
+  .meta-field:last-child { border-bottom: none; }
+  .meta-field-label { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; flex-shrink: 0; min-width: 120px; }
+  .meta-field-value { font-size: 13px; color: rgba(255,255,255,0.85); font-weight: 500; text-align: right; font-variant-numeric: tabular-nums; }
+  .meta-field-value.mono { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; color: var(--lime); }
+  .meta-status-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .meta-status-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .meta-status-label { font-size: 11px; color: var(--text-dim); font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+  .meta-status-value { font-size: 20px; font-weight: 800; color: var(--text); }
+  .meta-status-sub { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+  /* Activity log */
+  .activity-timeline { display: flex; flex-direction: column; gap: 10px; }
+  .activity-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 16px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: all 0.2s ease;
+  }
+  .activity-item:hover { border-color: var(--border-hover); }
+  .activity-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+  }
+  .activity-icon.x { background: rgba(255,59,59,0.08); border-color: rgba(255,59,59,0.15); }
+  .activity-icon.youtube { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.15); }
+  .activity-icon.meta { background: rgba(59,130,246,0.08); border-color: rgba(59,130,246,0.15); }
+  .activity-icon.value { background: rgba(204,255,1,0.08); border-color: rgba(204,255,1,0.15); }
+  .activity-body { flex: 1; min-width: 0; }
+  .activity-desc { font-size: 13px; line-height: 1.5; color: var(--text-secondary); }
+  .activity-meta { font-size: 11px; color: var(--text-dim); margin-top: 4px; display: flex; gap: 12px; align-items: center; }
+  .activity-time { font-size: 11px; color: var(--text-dim); flex-shrink: 0; text-align: right; }
+
+  /* YouTube */
+  .youtube-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 20px;
+  }
+  .yt-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+  .yt-card:hover { border-color: var(--border-hover); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .yt-thumb {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .yt-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .yt-body { padding: 18px 20px; }
+  .yt-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 8px; line-height: 1.4; }
+  .yt-desc { font-size: 12px; line-height: 1.6; color: var(--text-dim); margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .yt-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .yt-tag { font-size: 10px; padding: 3px 8px; border-radius: 4px; background: var(--glass); border: 1px solid var(--glass-border); color: var(--text-dim); font-weight: 500; }
+  .yt-footer { display: flex; justify-content: space-between; align-items: center; }
+
+  /* Lightbox */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.94);
+    backdrop-filter: blur(30px) saturate(150%);
+    -webkit-backdrop-filter: blur(30px) saturate(150%);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    animation: fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .lightbox.active { display: flex; }
+  .lightbox img {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 0 80px rgba(0,0,0,0.6), 0 0 120px rgba(255,59,59,0.03);
+    animation: scaleIn 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    background: linear-gradient(135deg, var(--surface2) 0%, var(--surface3) 100%);
+    color: var(--text);
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 999;
+    border: 1px solid rgba(34,197,94,0.2);
+    box-shadow: var(--shadow-lg), 0 0 20px rgba(34,197,94,0.1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    backdrop-filter: blur(20px);
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* Divider */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--border) 20%, var(--border) 80%, transparent 100%);
+    margin: 4px 20px;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.12); }
+
+  /* Responsive */
+  @media (max-width: 1100px) {
+    .copy-panel { width: 320px; min-width: 320px; padding: 20px 16px; }
+  }
+  @media (max-width: 900px) {
+    .app-layout { flex-direction: column; }
+    .side-nav {
+      position: static; width: 100%; min-width: 0;
+      flex-direction: row; flex-wrap: wrap;
+      border-right: none; border-bottom: 1px solid var(--border);
+    }
+    .side-nav-brand { border-bottom: none; padding: 16px 20px; }
+    .side-nav-section { display: flex; gap: 4px; flex-wrap: wrap; padding: 8px 12px; }
+    .side-nav-label { display: none; }
+    .side-nav-footer { display: none; }
+    .main-content { margin-left: 0; }
+    .container { flex-direction: column; }
+    .copy-panel { width: 100%; min-width: 0; border-right: none; border-bottom: 1px solid var(--border); }
+    .grid-area { padding: 16px; }
+    .image-grid { grid-template-columns: 1fr; }
+    .posts-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-layout">
+<!-- Side Navigation -->
+<nav class="side-nav">
+  <div class="side-nav-brand">
+    <img class="brand-logo" src="https://dpfivetlyfuijpopaabr.supabase.co/storage/v1/object/public/ad-creatives/brand/logo-full.png" alt="Open Audiences" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+    <span class="brand-text" style="display:none;">Content Engine</span>
+  </div>
+
+  <div class="side-nav-section">
+    <div class="side-nav-label">Content</div>
+    <button class="side-nav-item active" onclick="switchMainTab('creatives')" id="tab-creatives">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Creatives
+    </button>
+    <button class="side-nav-item" onclick="switchMainTab('value')" id="tab-value">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Value Posts
+    </button>
+    <button class="side-nav-item" onclick="switchMainTab('youtube')" id="tab-youtube">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+      YouTube
+    </button>
+    <button class="side-nav-item" onclick="switchMainTab('meta')" id="tab-meta">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      Meta Ads
+    </button>
+    <button class="side-nav-item" onclick="switchMainTab('posts')" id="tab-posts">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+      Post History
+    </button>
+    <button class="side-nav-item" onclick="switchMainTab('activity')" id="tab-activity">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Activity Log
+    </button>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <div class="side-nav-section">
+    <div class="side-nav-label">Angles</div>
+    <div id="angle-nav"></div>
+  </div>
+
+  <div class="side-nav-footer">
+    <div class="side-nav-meta" id="meta"></div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="main-content">
+
+<!-- ====== CREATIVES VIEW ====== -->
+<div id="creatives-view">
+<div class="container">
+  <div class="copy-panel" id="copy-panel">
+    <div class="copy-section">
+      <div class="copy-label">Loading...</div>
+    </div>
+  </div>
+  <div class="grid-area" id="grid-area">
+    <div class="grid-header">
+      <div class="size-tabs" id="size-tabs"></div>
+      <button class="download-all-btn" id="download-all" onclick="downloadAll()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Ad Package
+      </button>
+    </div>
+    <div class="image-grid" id="image-grid"></div>
+  </div>
+</div>
+</div>
+
+<!-- ====== VALUE POSTS VIEW ====== -->
+<div id="value-view" style="display:none;">
+  <div class="section-page">
+    <div class="section-page-header">
+      <h2 class="section-h2">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Value Posts
+      </h2>
+      <button class="download-btn" onclick="loadValuePosts()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        Refresh
+      </button>
+    </div>
+    <div class="stats-bar" id="vp-stats-bar"></div>
+    <div style="margin-bottom:28px;">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-dim);font-weight:600;margin-bottom:16px;">Standalone Posts</div>
+      <div class="posts-grid" id="vp-posts-grid">
+        <div class="empty-state"><div class="empty-state-sub">Loading value posts...</div></div>
+      </div>
+    </div>
+    <div id="vp-threads-section">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-dim);font-weight:600;margin-bottom:16px;">Threads</div>
+      <div id="vp-threads-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== YOUTUBE VIEW ====== -->
+<div id="youtube-view" style="display:none;">
+  <div class="section-page">
+    <div class="section-page-header">
+      <h2 class="section-h2">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        YouTube Content
+      </h2>
+      <button class="download-btn" onclick="loadYouTubePosts()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        Refresh
+      </button>
+    </div>
+    <div class="youtube-grid" id="yt-grid">
+      <div class="empty-state" style="grid-column:1/-1;">
+        <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        <div class="empty-state-title">No YouTube content yet</div>
+        <div class="empty-state-sub">Run the YouTube engine to generate video content</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== META ADS VIEW ====== -->
+<div id="meta-view" style="display:none;">
+  <div class="section-page">
+    <div class="section-page-header">
+      <h2 class="section-h2">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Meta Ads
+      </h2>
+    </div>
+
+    <div class="meta-info-panel">
+      <h3>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Campaign Details
+      </h3>
+      <div class="meta-field">
+        <span class="meta-field-label">Campaign</span>
+        <span class="meta-field-value">Open Audiences — Content Engine</span>
+      </div>
+      <div class="meta-field">
+        <span class="meta-field-label">Campaign ID</span>
+        <span class="meta-field-value mono">120244840410950030</span>
+      </div>
+      <div class="meta-field">
+        <span class="meta-field-label">Ad Set</span>
+        <span class="meta-field-value">Newsletter Owners — US — $10/day</span>
+      </div>
+      <div class="meta-field">
+        <span class="meta-field-label">Ad Set ID</span>
+        <span class="meta-field-value mono">120244840412120030</span>
+      </div>
+      <div class="meta-field">
+        <span class="meta-field-label">Pixel</span>
+        <span class="meta-field-value mono">1614838133195241</span>
+      </div>
+      <div class="meta-field">
+        <span class="meta-field-label">Destination</span>
+        <span class="meta-field-value"><a href="https://audiencereality.com" target="_blank" style="color:var(--lime);text-decoration:none;">audiencereality.com</a></span>
+      </div>
+      <div class="meta-field">
+        <span class="meta-field-label">Account</span>
+        <span class="meta-field-value">Open Audiences <span class="meta-field-value mono" style="display:inline;">(act_790713033335386)</span></span>
+      </div>
+    </div>
+
+    <div class="meta-status-row">
+      <div class="meta-status-card">
+        <div class="meta-status-label">Budget</div>
+        <div class="meta-status-value">$10<span style="font-size:14px;color:var(--text-dim)">/day</span></div>
+        <div class="meta-status-sub">Daily cap</div>
+      </div>
+      <div class="meta-status-card">
+        <div class="meta-status-label">Target</div>
+        <div class="meta-status-value" style="font-size:15px;color:var(--text-secondary);">US Newsletter Owners</div>
+        <div class="meta-status-sub">Open audiences</div>
+      </div>
+      <div class="meta-status-card">
+        <div class="meta-status-label">Creatives Pushed</div>
+        <div class="meta-status-value" id="meta-creative-count">—</div>
+        <div class="meta-status-sub">From log</div>
+      </div>
+    </div>
+
+    <div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-dim);font-weight:600;margin-bottom:16px;">Pushed Creatives</div>
+    <div id="meta-ads-list">
+      <div class="empty-state">
+        <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        <div class="empty-state-title">No creatives pushed yet</div>
+        <div class="empty-state-sub">Run the Meta push script to send creatives to your campaign</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== POST HISTORY VIEW ====== -->
+<div id="posts-view" style="display:none;">
+  <div class="section-page">
+    <div class="section-page-header">
+      <h2 class="section-h2">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+        Post History
+      </h2>
+      <button class="download-btn" onclick="refreshPosts()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        Refresh
+      </button>
+    </div>
+    <div id="posts-grid" class="posts-grid">
+      <div class="empty-state">
+        <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7L13.03 12.7a1.94 1.94 0 01-2.06 0L2 7"/></svg>
+        <div class="empty-state-title">No posts yet</div>
+        <div class="empty-state-sub">Posts will appear here once the daily schedule runs</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== ACTIVITY LOG VIEW ====== -->
+<div id="activity-view" style="display:none;">
+  <div class="section-page">
+    <div class="section-page-header">
+      <h2 class="section-h2">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Activity Log
+      </h2>
+      <button class="download-btn" onclick="loadActivityLog()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        Refresh
+      </button>
+    </div>
+    <div class="stats-bar" id="activity-stats-bar"></div>
+    <div class="activity-timeline" id="activity-timeline">
+      <div class="empty-state">
+        <div class="empty-state-sub">Loading activity...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end main-content -->
+</div><!-- end app-layout -->
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" />
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://dpfivetlyfuijpopaabr.supabase.co/storage/v1/object/public/ad-creatives';
+
+const STYLE_NAMES = {
+  '01': 'Neon Retro Futuristic',
+  '02': 'High-Contrast Comic Book',
+  '03': 'Hand-Drawn Editorial',
+  '04': '3D Pixar Style',
+  '05': 'Cinematic Photorealistic',
+  '06': 'Modern SaaS',
+};
+const STYLE_ENGINES = {
+  '01': 'gpt-image-2', '02': 'gpt-image-2', '03': 'Gemini',
+  '04': 'gpt-image-2', '05': 'gpt-image-2', '06': 'gpt-image-2',
+};
+const STYLE_FILES = {
+  '01': 'neon-retro', '02': 'comic-book', '03': 'editorial',
+  '04': 'pixar-3d', '05': 'photoreal', '06': 'modern-saas',
+};
+const SIZES = {
+  'feed-4x5': 'Feed 4:5',
+  'story-9x16': 'Story 9:16',
+  'landscape-16x9': 'Landscape 16:9',
+};
+
+let manifests = {};
+let currentAngle = null;
+let currentSize = 'feed-4x5';
+
+// ───────────────────────────────────────────────
+// Tab Switching
+// ───────────────────────────────────────────────
+const ALL_TABS = ['creatives', 'value', 'youtube', 'meta', 'posts', 'activity'];
+
+function switchMainTab(tab) {
+  ALL_TABS.forEach(t => {
+    const view = document.getElementById(`${t}-view`);
+    const btn = document.getElementById(`tab-${t}`);
+    if (view) view.style.display = t === tab ? '' : 'none';
+    if (btn) btn.classList.toggle('active', t === tab);
+  });
+  // Lazy-load data
+  if (tab === 'posts') refreshPosts();
+  if (tab === 'value') loadValuePosts();
+  if (tab === 'youtube') loadYouTubePosts();
+  if (tab === 'meta') loadMetaAds();
+  if (tab === 'activity') loadActivityLog();
+}
+
+// ───────────────────────────────────────────────
+// Creatives
+// ───────────────────────────────────────────────
+async function loadManifests() {
+  const angles = ['hidden-value','sponsor-pricing','data-gap','competitor-edge','case-study','educational','aspirational'];
+  manifests = {};
+  for (const angle of angles) {
+    try {
+      const resp = await fetch(`output/${angle}/manifest.json`);
+      if (resp.ok) manifests[angle] = await resp.json();
+    } catch {}
+  }
+  if (Object.keys(manifests).length === 0) manifests = getEmbeddedData();
+  renderAngleBar();
+  if (Object.keys(manifests).length > 0) selectAngle(Object.keys(manifests)[0]);
+}
+
+function getEmbeddedData() { return window.__AD_FACTORY_DATA || {}; }
+
+function renderAngleBar() {
+  const nav = document.getElementById('angle-nav');
+  nav.innerHTML = '';
+  for (const [name] of Object.entries(manifests)) {
+    const btn = document.createElement('button');
+    btn.className = 'side-nav-item';
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> ${name.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}`;
+    btn.onclick = () => selectAngle(name);
+    btn.id = `angle-${name}`;
+    nav.appendChild(btn);
+  }
+}
+
+function selectAngle(name) {
+  currentAngle = name;
+  document.querySelectorAll('#angle-nav .side-nav-item').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById(`angle-${name}`);
+  if (btn) btn.classList.add('active');
+  switchMainTab('creatives');
+  renderCopyPanel();
+  renderSizeTabs();
+  renderGrid();
+  const data = manifests[name];
+  document.getElementById('meta').textContent = data.description || '';
+}
+
+function renderCopyPanel() {
+  const panel = document.getElementById('copy-panel');
+  const data = manifests[currentAngle];
+  if (!data?.copy) { panel.innerHTML = '<div class="copy-section"><div class="copy-label">No copy data</div></div>'; return; }
+  const copy = data.copy;
+  let html = '';
+  html += `<div class="copy-section"><div class="copy-label">Primary Text</div><div class="copy-block" onclick="copyText(this)">${escHtml(copy.primary_text || '')}<svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></div></div>`;
+  if (copy.headlines?.length) {
+    html += '<div class="copy-section"><div class="copy-label">Headlines</div>';
+    for (const h of copy.headlines) html += `<div class="headline-item" onclick="copyText(this)">${escHtml(h)}</div>`;
+    html += '</div>';
+  }
+  if (copy.descriptions?.length) {
+    html += '<div class="copy-section"><div class="copy-label">Descriptions</div>';
+    for (const d of copy.descriptions) html += `<div class="headline-item" onclick="copyText(this)">${escHtml(d)}</div>`;
+    html += '</div>';
+  }
+  if (copy.cta) html += `<div class="copy-section"><div class="copy-label">Call to Action</div><div class="headline-item" onclick="copyText(this)" style="font-weight:700;color:var(--accent)">${escHtml(copy.cta)}</div></div>`;
+  panel.innerHTML = html;
+}
+
+function renderSizeTabs() {
+  const tabs = document.getElementById('size-tabs');
+  tabs.innerHTML = '';
+  for (const [key, label] of Object.entries(SIZES)) {
+    const tab = document.createElement('button');
+    tab.className = `size-tab ${key === currentSize ? 'active' : ''}`;
+    tab.textContent = label;
+    tab.onclick = () => {
+      currentSize = key;
+      document.querySelectorAll('.size-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      renderGrid();
+    };
+    tabs.appendChild(tab);
+  }
+}
+
+function renderGrid() {
+  const grid = document.getElementById('image-grid');
+  grid.innerHTML = '';
+  for (const sid of ['01','02','03','04','05','06']) {
+    const styleName = STYLE_NAMES[sid];
+    const styleFile = STYLE_FILES[sid];
+    const engine = STYLE_ENGINES[sid];
+    const imgJpg = `${SUPABASE_URL}/${currentAngle}/${currentSize}/${sid}-${styleFile}.jpg`;
+    const imgPng = `${SUPABASE_URL}/${currentAngle}/${currentSize}/${sid}-${styleFile}.png`;
+    const fallbackPng = `${SUPABASE_URL}/${currentAngle}/${sid}-${styleFile}.png`;
+    const card = document.createElement('div');
+    card.className = 'image-card';
+    card.innerHTML = `<img src="${imgJpg}" onerror="this.src='${imgPng}'; this.onerror=function(){this.src='${fallbackPng}';this.onerror=null;}" onclick="openLightbox(this.src)" alt="${styleName}" loading="lazy" /><div class="image-card-footer"><div><div class="style-name">${styleName}</div><span class="engine-badge">${engine}</span></div><a class="download-btn" href="${imgJpg}" download="${currentAngle}-${currentSize}-${sid}-${styleFile}.jpg" onclick="event.stopPropagation()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a></div>`;
+    grid.appendChild(card);
+  }
+}
+
+// ───────────────────────────────────────────────
+// Value Posts
+// ───────────────────────────────────────────────
+let valuePosts = null;
+
+async function loadValuePosts() {
+  const postsGrid = document.getElementById('vp-posts-grid');
+  const threadsGrid = document.getElementById('vp-threads-grid');
+  const statsBar = document.getElementById('vp-stats-bar');
+  postsGrid.innerHTML = '<div class="empty-state"><div class="empty-state-sub">Loading...</div></div>';
+
+  let data = null;
+
+  // 1. Try Supabase index
+  try {
+    const resp = await fetch(`${SUPABASE_URL}/value-posts-index.json`);
+    if (resp.ok) data = await resp.json();
+  } catch {}
+
+  // 2. Try local files (known filenames pattern)
+  if (!data) {
+    const knownFiles = [
+      'value-posts/2026-04-24-value-posts-095439.json',
+    ];
+    for (const f of knownFiles) {
+      try {
+        const resp = await fetch(f);
+        if (resp.ok) { data = await resp.json(); break; }
+      } catch {}
+    }
+  }
+
+  // 3. Fall back to embedded data
+  if (!data) data = window.__VALUE_POSTS_DATA;
+
+  if (!data) {
+    postsGrid.innerHTML = '<div class="empty-state"><div class="empty-state-title">No value posts found</div><div class="empty-state-sub">Run value-posts.py to generate posts from YouTube videos</div></div>';
+    return;
+  }
+  valuePosts = data;
+
+  const posts = data.posts || [];
+  const threads = data.threads || [];
+  const postedCount = posts.filter(p => p.posted).length;
+  const remaining = posts.filter(p => !p.posted).length;
+  const daysCoverage = Math.round(remaining / 2);
+
+  // Stats
+  statsBar.innerHTML = `
+    <div class="stat-chip"><span class="stat-num">${postedCount}</span> posted</div>
+    <div class="stat-chip"><span class="stat-num">${remaining}</span> remaining</div>
+    <div class="stat-chip"><span class="stat-num">~${daysCoverage}d</span> of content</div>
+    <div class="stat-chip" style="color:var(--lime);font-size:11px;">📹 ${escHtml(data.source_video || 'Unknown source')}</div>
+  `;
+
+  // Posts
+  postsGrid.innerHTML = '';
+  let isFirstUnposted = true;
+  for (const post of posts) {
+    const isNext = !post.posted && isFirstUnposted;
+    if (!post.posted) isFirstUnposted = false;
+
+    const card = document.createElement('div');
+    card.className = `value-post-card ${post.posted ? 'posted' : isNext ? 'next-up' : ''}`;
+
+    let statusClass = post.posted ? 'published' : isNext ? 'next' : 'queued';
+    let statusLabel = post.posted ? '✓ Posted' : isNext ? '↑ Next Up' : 'Queued';
+
+    card.innerHTML = `
+      <div class="vp-header">
+        <span class="vp-id">#${post.id}</span>
+        <span class="post-status ${statusClass}">${statusLabel}</span>
+      </div>
+      <div class="vp-text">${escHtml(post.text || '')}</div>
+      ${data.source_video ? `<div class="vp-source"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg> <a href="${escHtml(data.source_url || '#')}" target="_blank">${escHtml(data.source_video)}</a></div>` : ''}
+      ${post.posted_at ? `<div class="vp-posted-at">Posted ${new Date(post.posted_at).toLocaleString()}</div>` : ''}
+    `;
+    postsGrid.appendChild(card);
+  }
+
+  // Threads
+  threadsGrid.innerHTML = '';
+  for (const thread of threads) {
+    const threadEl = document.createElement('div');
+    threadEl.className = 'thread-card';
+    const tweetsHtml = (thread.tweets || []).map((t, i) =>
+      `<div class="thread-tweet"><div class="thread-num">${i + 1}/${thread.tweets.length}</div>${escHtml(t)}</div>`
+    ).join('');
+    threadEl.innerHTML = `
+      <div class="thread-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+        ${escHtml(thread.title || `Thread ${thread.id}`)}
+        <span class="post-status ${thread.posted ? 'published' : 'queued'}" style="margin-left:auto">${thread.posted ? '✓ Posted' : 'Queued'}</span>
+      </div>
+      ${tweetsHtml}
+    `;
+    threadsGrid.appendChild(threadEl);
+  }
+}
+
+// ───────────────────────────────────────────────
+// YouTube Posts
+// ───────────────────────────────────────────────
+async function loadYouTubePosts() {
+  const grid = document.getElementById('yt-grid');
+  grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-sub">Loading...</div></div>';
+
+  const allPosts = [];
+  const knownFiles = [];
+
+  // Try local pattern
+  const now = new Date();
+  for (let i = 0; i < 30; i++) {
+    const d = new Date(now); d.setDate(d.getDate() - i);
+    const dateStr = d.toISOString().split('T')[0];
+    knownFiles.push(`youtube-posts/${dateStr}.json`);
+    knownFiles.push(`youtube-posts/${dateStr}-youtube.json`);
+  }
+
+  for (const f of knownFiles) {
+    try {
+      const resp = await fetch(f);
+      if (resp.ok) {
+        const data = await resp.json();
+        if (Array.isArray(data)) allPosts.push(...data);
+        else allPosts.push(data);
+      }
+    } catch {}
+  }
+
+  // Also try Supabase
+  try {
+    const resp = await fetch(`${SUPABASE_URL}/youtube-index.json`);
+    if (resp.ok) { const idx = await resp.json(); allPosts.push(...(Array.isArray(idx) ? idx : [idx])); }
+  } catch {}
+
+  if (allPosts.length === 0) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+      <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+      <div class="empty-state-title">No YouTube content yet</div>
+      <div class="empty-state-sub">Run youtube-engine.py to generate video metadata and thumbnails</div>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = '';
+  for (const v of allPosts) {
+    const card = document.createElement('div');
+    card.className = 'yt-card';
+    const tags = (v.tags || []).slice(0, 6).map(t => `<span class="yt-tag">${escHtml(t)}</span>`).join('');
+    const thumb = v.thumbnail_url || v.thumbnail || '';
+    card.innerHTML = `
+      <div class="yt-thumb">${thumb ? `<img src="${escHtml(thumb)}" alt="thumbnail" />` : '📹'}</div>
+      <div class="yt-body">
+        <div class="yt-title">${escHtml(v.title || 'Untitled')}</div>
+        <div class="yt-desc">${escHtml(v.description || '')}</div>
+        ${tags ? `<div class="yt-tags">${tags}</div>` : ''}
+        <div class="yt-footer">
+          <span class="post-date">${v.upload_date || v.generated_at ? new Date(v.upload_date || v.generated_at).toLocaleDateString() : ''}</span>
+          ${v.url || v.video_url ? `<a class="download-btn" href="${escHtml(v.url || v.video_url)}" target="_blank" style="text-decoration:none;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> Watch</a>` : ''}
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  }
+}
+
+// ───────────────────────────────────────────────
+// Meta Ads
+// ───────────────────────────────────────────────
+async function loadMetaAds() {
+  let log = null;
+  try {
+    const resp = await fetch('meta-ads-log.json');
+    if (resp.ok) log = await resp.json();
+  } catch {}
+  try {
+    if (!log) {
+      const resp = await fetch(`${SUPABASE_URL}/meta-ads-log.json`);
+      if (resp.ok) log = await resp.json();
+    }
+  } catch {}
+
+  const list = document.getElementById('meta-ads-list');
+  const countEl = document.getElementById('meta-creative-count');
+
+  if (!log || (Array.isArray(log) && log.length === 0)) {
+    countEl.textContent = '0';
+    return;
+  }
+
+  const items = Array.isArray(log) ? log : [log];
+  countEl.textContent = items.length;
+
+  list.innerHTML = '';
+  const grid = document.createElement('div');
+  grid.className = 'posts-grid';
+  for (const item of items.reverse()) {
+    const card = document.createElement('div');
+    card.className = 'post-card';
+    const success = item.result?.success || item.success;
+    const statusClass = success ? 'published' : 'failed';
+    const statusLabel = success ? 'Pushed' : 'Failed';
+    card.innerHTML = `
+      <div class="post-card-header">
+        <span class="post-angle-badge">${escHtml(item.angle || item.creative_name || 'Creative')}</span>
+        <span class="post-status ${statusClass}">${statusLabel}</span>
+      </div>
+      <div class="post-date">${item.timestamp ? new Date(item.timestamp).toLocaleString() : ''}</div>
+      ${item.image_url ? `<img class="post-image" src="${escHtml(item.image_url)}" onclick="openLightbox('${escHtml(item.image_url)}')" />` : ''}
+      <div class="post-meta">
+        ${item.ad_id ? `<span>Ad ID: ${escHtml(String(item.ad_id))}</span>` : ''}
+        ${item.result?.error ? `<span style="color:var(--red)">${escHtml(String(item.result.error))}</span>` : ''}
+      </div>
+    `;
+    grid.appendChild(card);
+  }
+  list.appendChild(grid);
+}
+
+// ───────────────────────────────────────────────
+// Post History (X)
+// ───────────────────────────────────────────────
+async function refreshPosts() {
+  const grid = document.getElementById('posts-grid');
+  grid.innerHTML = '<div class="empty-state"><div class="empty-state-sub">Loading...</div></div>';
+  try {
+    const logs = await loadPostLogs();
+    if (logs.length === 0) {
+      grid.innerHTML = `<div class="empty-state"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7L13.03 12.7a1.94 1.94 0 01-2.06 0L2 7"/></svg><div class="empty-state-title">No posts yet</div><div class="empty-state-sub">Posts will appear here once the daily schedule runs</div></div>`;
+      return;
+    }
+    grid.innerHTML = '';
+    for (const post of [...logs].reverse()) {
+      const card = document.createElement('div');
+      card.className = 'post-card';
+      const status = post.result?.success ? 'published' : (post.result?.error ? 'failed' : 'pending');
+      const statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
+      const date = new Date(post.timestamp).toLocaleString();
+      const permalink = post.result?.permalink || '';
+      card.innerHTML = `<div class="post-card-header"><span class="post-angle-badge">${escHtml(post.angle || 'unknown')}</span><span class="post-status ${status}">${statusLabel}</span></div><div class="post-date">${date}</div><div class="post-caption">${escHtml(post.caption || '—')}</div>${post.image_url ? `<img class="post-image" src="${escHtml(post.image_url)}" onclick="openLightbox('${escHtml(post.image_url)}')" />` : ''}<div class="post-meta">${permalink ? `<a href="${escHtml(permalink)}" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:600;">View on X ↗</a>` : ''}${post.result?.post_id ? `<span>ID: ${escHtml(String(post.result.post_id))}</span>` : ''}</div>`;
+      grid.appendChild(card);
+    }
+  } catch (e) {
+    grid.innerHTML = `<div class="empty-state"><div class="empty-state-sub" style="color:var(--red);">Could not load: ${escHtml(e.message)}</div></div>`;
+  }
+}
+
+async function loadPostLogs() {
+  const allLogs = [];
+  const now = new Date();
+  // Try local files first
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(now); d.setDate(d.getDate() - i);
+    const dateStr = d.toISOString().split('T')[0];
+    try {
+      const resp = await fetch(`logs/${dateStr}.json`);
+      if (resp.ok) { const logs = await resp.json(); allLogs.push(...(Array.isArray(logs) ? logs : [logs])); }
+    } catch {}
+  }
+  // Try Supabase
+  for (let i = 0; i < 30; i++) {
+    const d = new Date(now); d.setDate(d.getDate() - i);
+    const dateStr = d.toISOString().split('T')[0];
+    try {
+      const resp = await fetch(`${SUPABASE_URL}/post-logs/${dateStr}.json`);
+      if (resp.ok) { const logs = await resp.json(); allLogs.push(...(Array.isArray(logs) ? logs : [logs])); }
+    } catch {}
+  }
+  return allLogs;
+}
+
+// ───────────────────────────────────────────────
+// Activity Log
+// ───────────────────────────────────────────────
+async function loadActivityLog() {
+  const timeline = document.getElementById('activity-timeline');
+  const statsBar = document.getElementById('activity-stats-bar');
+  timeline.innerHTML = '<div class="empty-state"><div class="empty-state-sub">Aggregating activity...</div></div>';
+
+  const activities = [];
+
+  // X posts from logs/
+  try {
+    const xLogs = await loadPostLogs();
+    for (const post of xLogs) {
+      activities.push({
+        type: 'x',
+        icon: '🐦',
+        timestamp: new Date(post.timestamp),
+        desc: (post.caption || '').substring(0, 100) + ((post.caption || '').length > 100 ? '…' : ''),
+        status: post.result?.success ? 'published' : 'failed',
+        link: post.result?.permalink || '',
+        badge: post.angle || 'X Post',
+      });
+    }
+  } catch {}
+
+  // Value posts
+  try {
+    const vp = valuePosts || window.__VALUE_POSTS_DATA;
+    if (vp) {
+      for (const post of vp.posts || []) {
+        if (post.posted && post.posted_at) {
+          activities.push({
+            type: 'value',
+            icon: '💡',
+            timestamp: new Date(post.posted_at),
+            desc: (post.text || '').substring(0, 100) + ((post.text || '').length > 100 ? '…' : ''),
+            status: 'published',
+            badge: 'Value Post',
+          });
+        }
+      }
+      for (const thread of vp.threads || []) {
+        if (thread.posted && thread.posted_at) {
+          activities.push({
+            type: 'value',
+            icon: '💡',
+            timestamp: new Date(thread.posted_at),
+            desc: `Thread: ${thread.title || ''}`,
+            status: 'published',
+            badge: 'Thread',
+          });
+        }
+      }
+    }
+  } catch {}
+
+  // Meta ads
+  try {
+    const resp = await fetch('meta-ads-log.json');
+    if (resp.ok) {
+      const metaLog = await resp.json();
+      for (const item of (Array.isArray(metaLog) ? metaLog : [metaLog])) {
+        activities.push({
+          type: 'meta',
+          icon: '📊',
+          timestamp: new Date(item.timestamp || Date.now()),
+          desc: `Creative pushed: ${item.angle || item.creative_name || 'Unknown'}`,
+          status: (item.result?.success || item.success) ? 'published' : 'failed',
+          badge: 'Meta Ad',
+        });
+      }
+    }
+  } catch {}
+
+  // Sort by most recent first
+  activities.sort((a, b) => b.timestamp - a.timestamp);
+
+  // Stats
+  const byType = { x: 0, value: 0, meta: 0, youtube: 0 };
+  for (const a of activities) if (byType[a.type] !== undefined) byType[a.type]++;
+  statsBar.innerHTML = `
+    <div class="stat-chip"><span class="stat-num">${activities.length}</span> total events</div>
+    ${byType.x ? `<div class="stat-chip">🐦 <span class="stat-num">${byType.x}</span> X posts</div>` : ''}
+    ${byType.value ? `<div class="stat-chip">💡 <span class="stat-num">${byType.value}</span> value posts</div>` : ''}
+    ${byType.meta ? `<div class="stat-chip">📊 <span class="stat-num">${byType.meta}</span> meta ads</div>` : ''}
+    ${byType.youtube ? `<div class="stat-chip">📹 <span class="stat-num">${byType.youtube}</span> YouTube</div>` : ''}
+  `;
+
+  if (activities.length === 0) {
+    timeline.innerHTML = `<div class="empty-state">
+      <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <div class="empty-state-title">No activity recorded yet</div>
+      <div class="empty-state-sub">Activity will appear here as content is posted across channels</div>
+    </div>`;
+    return;
+  }
+
+  timeline.innerHTML = '';
+  for (const act of activities) {
+    const item = document.createElement('div');
+    item.className = 'activity-item';
+    const statusColor = act.status === 'published' ? 'var(--green)' : act.status === 'failed' ? 'var(--red)' : 'var(--amber)';
+    item.innerHTML = `
+      <div class="activity-icon ${act.type}">${act.icon}</div>
+      <div class="activity-body">
+        <div class="activity-desc">${escHtml(act.desc)}</div>
+        <div class="activity-meta">
+          <span class="lime-badge">${escHtml(act.badge)}</span>
+          <span style="color:${statusColor}">${act.status.charAt(0).toUpperCase() + act.status.slice(1)}</span>
+          ${act.link ? `<a href="${escHtml(act.link)}" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:600;">View ↗</a>` : ''}
+        </div>
+      </div>
+      <div class="activity-time">${act.timestamp.toLocaleDateString()}<br><span style="font-size:10px;">${act.timestamp.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span></div>
+    `;
+    timeline.appendChild(item);
+  }
+}
+
+// ───────────────────────────────────────────────
+// Lightbox / Copy / Toast
+// ───────────────────────────────────────────────
+function openLightbox(src) { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').classList.add('active'); }
+function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); }
+
+async function copyText(el) {
+  const text = el.innerText.replace('Copied', '').trim();
+  try { await navigator.clipboard.writeText(text); } catch {
+    const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+  }
+  el.classList.add('copied');
+  showToast('Copied to clipboard');
+  setTimeout(() => el.classList.remove('copied'), 2000);
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> ${msg}`;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+function escHtml(s) {
+  if (typeof s !== 'string') s = String(s || '');
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ───────────────────────────────────────────────
+// Download All
+// ───────────────────────────────────────────────
+async function downloadAll() {
+  const { BlobWriter, ZipWriter, BlobReader } = await loadZipJs();
+  const zipBlobWriter = new BlobWriter("application/zip");
+  const zipWriter = new ZipWriter(zipBlobWriter);
+  const styles = ['01','02','03','04','05','06'];
+  const allSizes = Object.keys(SIZES);
+  let fileCount = 0;
+  showToast('Building ad package...');
+  for (const size of allSizes) {
+    for (const sid of styles) {
+      const styleFile = STYLE_FILES[sid];
+      const urlJpg = `${SUPABASE_URL}/${currentAngle}/${size}/${sid}-${styleFile}.jpg`;
+      const urlPng = `${SUPABASE_URL}/${currentAngle}/${size}/${sid}-${styleFile}.png`;
+      const fallback = `${SUPABASE_URL}/${currentAngle}/${sid}-${styleFile}.png`;
+      try {
+        let resp = await fetch(urlJpg); let ext = 'jpg';
+        if (!resp.ok) { resp = await fetch(urlPng); ext = 'png'; }
+        if (!resp.ok) { resp = await fetch(fallback); ext = 'png'; }
+        if (!resp.ok) continue;
+        const blob = await resp.blob();
+        await zipWriter.add(`${currentAngle}/${size}/${sid}-${styleFile}.${ext}`, new BlobReader(blob));
+        fileCount++;
+      } catch {}
+    }
+  }
+  const data = manifests[currentAngle];
+  if (data?.copy) {
+    const copy = data.copy;
+    let t = `AD COPY — ${currentAngle.toUpperCase().replace(/-/g, ' ')}\n${'='.repeat(50)}\n\n`;
+    t += `DESCRIPTION:\n${data.description || ''}\n\nPRIMARY TEXT:\n${copy.primary_text || ''}\n\n${'─'.repeat(50)}\n\nHEADLINES:\n`;
+    (copy.headlines || []).forEach((h, i) => t += `${i+1}. ${h}\n`);
+    t += `\nDESCRIPTIONS:\n`;
+    (copy.descriptions || []).forEach((d, i) => t += `${i+1}. ${d}\n`);
+    t += `\nCTA: ${copy.cta || ''}\n`;
+    await zipWriter.add(`${currentAngle}/ad-copy.txt`, new BlobReader(new Blob([t], { type: 'text/plain' })));
+    fileCount++;
+  }
+  await zipWriter.close();
+  const zipBlob = await zipBlobWriter.getData();
+  const a = document.createElement('a'); a.href = URL.createObjectURL(zipBlob); a.download = `${currentAngle}-ad-pack.zip`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(a.href);
+  showToast(`${fileCount} files downloaded`);
+}
+
+async function loadZipJs() {
+  if (window._zipJs) return window._zipJs;
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/@nicolo-ribaudo/zip.js@2.7.34/dist/zip-full.min.js';
+    script.onload = () => { window._zipJs = { BlobWriter: zip.BlobWriter, ZipWriter: zip.ZipWriter, BlobReader: zip.BlobReader }; resolve(window._zipJs); };
+    script.onerror = () => {
+      const s2 = document.createElement('script'); s2.src = 'https://cdn.jsdelivr.net/npm/@nicolo-ribaudo/zip.js@2.7.34/dist/zip-full.min.js';
+      s2.onload = () => { window._zipJs = { BlobWriter: zip.BlobWriter, ZipWriter: zip.ZipWriter, BlobReader: zip.BlobReader }; resolve(window._zipJs); };
+      s2.onerror = reject; document.head.appendChild(s2);
+    };
+    document.head.appendChild(script);
+  });
+}
+
+// ───────────────────────────────────────────────
+// Keyboard shortcuts
+// ───────────────────────────────────────────────
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+
+// ───────────────────────────────────────────────
+// Embedded Data
+// ───────────────────────────────────────────────
+window.__AD_FACTORY_DATA = {
+  "hidden-value": {
+    "angle": "hidden-value",
+    "description": "Your subscribers are worth more than you think",
+    "copy": {
+      "primary_text": "Your subscribers are worth more than you're charging.\nYou just can't see it yet.\n\nMost newsletter operators know:\n- who opened\n- who clicked\n- who subscribed\n\nBut they don't know:\n- who has money\n- what their audience is likely to buy\n- which advertisers are the best fit\n- how valuable their subscriber base really is\n\nOpen Audiences analyzes your list and reveals the hidden value inside it — so you can price smarter, pitch better sponsors, and monetize with more confidence.\n\nNo spreadsheets.\nNo guesswork.\nJust answers.",
+      "headlines": ["Your Subscribers Are Worth More Than You're Charging","Stop Guessing What Your Audience Is Worth","Hidden Value Is Sitting Inside Your Email List"],
+      "descriptions": ["See the income, intent, and advertiser value hidden in your audience.","Turn subscriber data into better sponsorship pricing and smarter monetization.","Know who your audience really is — and what they're worth."],
+      "cta": "See What My Audience Is Worth"
+    },
+    "creatives": []
+  }
+};
+
+window.__VALUE_POSTS_DATA = {"source":"youtube","source_video":"The GLP-1 Audience","source_url":"https://www.youtube.com/watch?v=bzPcnZjYZ2s","generated_at":"2026-04-24T10:06:18.731821","rewritten_by":"opus","focus":"hidden monetization opportunities","posts":[{"id":1,"text":"A GLP-1 newsletter found 2,197 C-suite executives in their 48K list. They were pitching pharma sponsors. They should have been selling corporate wellness programs at $5,000 per contract.","type":"standalone","posted":false,"posted_at":null},{"id":2,"text":"General health newsletter CPM: $22. Niche GLP-1 newsletter CPM: $55+. Same industry, 2.5x the price. The difference isn't audience size — it's knowing exactly who's reading.","type":"standalone","posted":true,"posted_at":"2026-04-24T10:13:01.755610"},{"id":3,"text":"40% of a GLP-1 newsletter's readers are over 55. The obvious play is pharma ads. The hidden play? Medicare supplement sponsors, estate planning firms, and luxury retirement communities — categories that pay 3x more.","type":"standalone","posted":false,"posted_at":null},{"id":4,"text":"Your health newsletter subscribers aren't just patients. 4.5% might be executives at companies that need corporate wellness programs. That's not an ad sale — that's a B2B contract worth 10x a banner placement.","type":"standalone","posted":false,"posted_at":null},{"id":5,"text":"Everyone pitches pharma companies. The smart money is in compounding pharmacies — they're ignored by every other newsletter, they solve real reader pain (access + affordability), and they close faster because they have no other channel.","type":"standalone","posted":false,"posted_at":null},{"id":6,"text":"A GLP-1 audience self-selects for high income. They're paying for expensive medications out of pocket. That means they're also buying luxury travel, premium meal delivery, high-end fitness equipment, and financial advisory services. None of those are \"health sponsors.\"","type":"standalone","posted":false,"posted_at":null},{"id":7,"text":"Your health audience takes GLP-1 medications. They're also changing how they eat. Factor meals, protein delivery services, nutrition coaching — three sponsor categories that health newsletters almost never pitch because they seem \"off-topic.\" They're not.","type":"standalone","posted":false,"posted_at":null},{"id":8,"text":"Insurance is confusing. Medications are expensive. GoodRx, HSA platforms, insurance comparison tools — they're desperate to reach this exact audience and no health newsletter is pitching them. The financial pain point is a sponsorship goldmine.","type":"standalone","posted":false,"posted_at":null},{"id":9,"text":"A health newsletter's readers don't just need health products. They need smart scales, body composition trackers, fitness apps, and workout programs. Every adjacent category is a sponsor that your competitors aren't talking to.","type":"standalone","posted":false,"posted_at":null},{"id":10,"text":"2,197 executives in a 48K list. Pull their LinkedIn profiles. Pitch their companies on employee wellness programs. Your email list just became a B2B sales funnel that has nothing to do with selling ads.","type":"standalone","posted":false,"posted_at":null},{"id":11,"text":"The pharma-adjacent play: Your audience takes GLP-1 medications. That means they're also shopping for new wardrobes (body changes), booking travel (new confidence), and investing in skincare. Those sponsors will never find your audience without you.","type":"standalone","posted":false,"posted_at":null},{"id":12,"text":"Life-stage monetization: Same list, three hidden revenue streams. Medicare supplements for the 55+ segment. Family health plans for parents. Luxury wellness retreats for high earners. Each at a 25-40% premium over general health ads.","type":"standalone","posted":false,"posted_at":null},{"id":13,"text":"A newsletter charging $500 per sponsorship wasn't doing it because the audience was worth $500. They just didn't know 35% of readers earned $150K+. One data point changed their entire pricing model.","type":"standalone","posted":false,"posted_at":null},{"id":14,"text":"The biggest monetization opportunities in your newsletter are the ones that have nothing to do with your topic. A health audience that needs financial planning. A tech audience that buys luxury goods. The hidden connections are where the money is.","type":"standalone","posted":false,"posted_at":null},{"id":15,"text":"Most creators sell ad space to the obvious category. The creators making real money find the non-obvious sponsors — the ones who need your audience but would never think to look for a newsletter to reach them. That's the gap. That's the opportunity.","type":"standalone","posted":false,"posted_at":null}],"threads":[{"id":1,"type":"thread","title":"The Hidden Sponsors Your Newsletter Is Missing","posted":false,"posted_at":null,"tweets":["A 48,000-subscriber GLP-1 newsletter was selling pharma ads for $500. Then they looked at WHO was actually reading. What they found opened up revenue streams they never imagined.","Hidden insight #1: 40% of readers were over 55. That's not just a health audience — that's Medicare supplements, estate planning, retirement communities, and luxury travel. None of those are \"health sponsors.\"","Hidden insight #2: 2,197 executives and VPs in the list. Not an ad opportunity — a B2B opportunity. Corporate wellness programs at $5,000 per contract instead of $500 banner ads.","Hidden insight #3: GLP-1 patients are changing their bodies. New wardrobes, new fitness routines, new diets, new confidence. Fashion brands, meal delivery, fitness apps, even travel companies — all hidden sponsors.","Hidden insight #4: The financial pain point. Expensive medications + confusing insurance = readers who desperately need GoodRx, HSA platforms, and insurance comparison tools. Those companies have zero newsletter partnerships right now.","Hidden insight #5: Compounding pharmacies. Every newsletter pitches Novo Nordisk. Nobody pitches the local compounding pharmacy that solves access and affordability — and they close in days, not months.","The lesson: Your most valuable sponsors aren't in your category. They're adjacent to it. The creators who find those hidden connections will always outmonetize the ones selling obvious ads."]},{"id":2,"type":"thread","title":"Why Your Audience Is Worth More Than You Think","posted":false,"posted_at":null,"tweets":["A general health newsletter earns $22 CPM. A niche GLP-1 newsletter earns $55+. Same industry. 2.5x the revenue. The difference isn't better content — it's understanding who's reading.","When your topic involves expensive medications, your audience self-selects for income. You don't need to find wealthy readers — the content does the filtering for you.","But here's what most creators miss: knowing THAT your audience has money is step one. Knowing WHAT ELSE they buy is where the real monetization happens.","A GLP-1 reader isn't just a patient. They're also a meal planner, a gym member, a new wardrobe shopper, and possibly a corporate decision-maker. Each of those is a completely separate sponsor category.","Stop selling \"newsletter ads.\" Start selling \"access to a verified, high-income audience with specific buying behaviors that your competitors can't reach any other way.\"","The gap between $22 and $55 CPM isn't about writing better content. It's about revealing the hidden value in your audience — and selling the opportunities that nobody else can see."]}]};
+
+// ───────────────────────────────────────────────
+// Init
+// ───────────────────────────────────────────────
+loadManifests();
+</script>
+</body>
+</html>
