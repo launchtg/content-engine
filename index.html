@@ -36,6 +36,35 @@
     --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
     --shadow-glow: 0 0 40px rgba(255,59,59,0.06);
   }
+
+  /* Light theme overrides */
+  body.light-theme {
+    --bg: #F5F7FA;
+    --surface: #FFFFFF;
+    --surface2: #F0F2F5;
+    --surface3: #E8EBF0;
+    --border: rgba(0,0,0,0.08);
+    --border-hover: rgba(0,0,0,0.14);
+    --text: #1A1A2E;
+    --text-secondary: #4A5568;
+    --text-dim: #A0AEC0;
+    --accent: #FF3B3B;
+    --accent-dim: rgba(255,59,59,0.08);
+    --accent-glow: rgba(255,59,59,0.12);
+    --lime: #8BAF00;
+    --lime-dim: rgba(139,175,0,0.10);
+    --glass: rgba(0,0,0,0.03);
+    --glass-border: rgba(0,0,0,0.06);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+    --shadow-glow: 0 0 40px rgba(255,59,59,0.04);
+  }
+
+  /* Smooth theme transitions */
+  body, body * {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -155,6 +184,136 @@
     border-top: 1px solid var(--border);
   }
   .side-nav-meta { font-size: 11px; color: var(--text-dim); line-height: 1.6; }
+
+  /* Theme toggle */
+  .theme-toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    margin: 0 0 8px 0;
+    border-radius: 8px;
+    background: var(--glass);
+    border: 1px solid var(--border);
+  }
+  .theme-toggle-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .theme-toggle-switch {
+    position: relative;
+    width: 48px;
+    height: 26px;
+    cursor: pointer;
+  }
+  .theme-toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+  .theme-toggle-track {
+    position: absolute;
+    inset: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    transition: background 0.3s ease;
+    display: flex;
+    align-items: center;
+    padding: 0 3px;
+    justify-content: space-between;
+    font-size: 11px;
+  }
+  .theme-toggle-switch input:checked ~ .theme-toggle-track {
+    background: rgba(255,59,59,0.1);
+    border-color: rgba(255,59,59,0.2);
+  }
+  .theme-toggle-knob {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    transition: transform 0.3s ease, background 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    z-index: 1;
+  }
+  .theme-toggle-switch input:checked ~ .theme-toggle-knob {
+    transform: translateX(22px);
+  }
+
+  /* Logo swap for light/dark */
+  .brand-logo-dark { display: block; }
+  .brand-logo-light { display: none; }
+  body.light-theme .brand-logo-dark { display: none; }
+  body.light-theme .brand-logo-light { display: block; }
+
+  /* Light theme: side nav gets subtle border instead of gradient */
+  body.light-theme .side-nav {
+    background: #FFFFFF;
+    border-right: 1px solid rgba(0,0,0,0.08);
+  }
+  /* Light theme: image cards use shadow instead of glow */
+  body.light-theme .image-card:hover {
+    border-color: rgba(255,59,59,0.15);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  }
+  /* Light theme: copy blocks */
+  body.light-theme .copy-block {
+    background: #F0F2F5;
+  }
+  body.light-theme .copy-block:hover {
+    background: #E8EBF0;
+  }
+  /* Light theme: copy panel */
+  body.light-theme .copy-panel {
+    background: #FFFFFF;
+  }
+  /* Light theme: size tabs */
+  body.light-theme .size-tabs {
+    background: #F0F2F5;
+  }
+  /* Light theme: post status pills readable */
+  body.light-theme .post-status.published { background: rgba(34,197,94,0.12); }
+  body.light-theme .post-status.failed { background: rgba(239,68,68,0.12); }
+  body.light-theme .post-status.pending { background: rgba(245,158,11,0.12); }
+  /* Light theme: scrollbar */
+  body.light-theme ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); }
+  body.light-theme ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
+  /* Light theme: toast */
+  body.light-theme .toast {
+    background: #FFFFFF;
+    color: var(--text);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+  /* Light theme: meta info panel */
+  body.light-theme .meta-info-panel {
+    background: linear-gradient(135deg, #1a2a5e 0%, #2a3a60 100%);
+  }
+  /* Light theme: thread cards */
+  body.light-theme .thread-card {
+    background: #F0F2F5;
+    border-color: rgba(0,0,0,0.08);
+  }
+  body.light-theme .thread-tweet {
+    background: #FFFFFF;
+    color: var(--text-secondary);
+  }
+  /* Lightbox always dark */
+  .lightbox {
+    background: rgba(0,0,0,0.94) !important;
+  }
 
   /* Main content */
   .main-content { flex: 1; margin-left: 240px; }
@@ -783,8 +942,8 @@
 <!-- Side Navigation -->
 <nav class="side-nav">
   <div class="side-nav-brand">
-    <img class="brand-logo" src="https://dpfivetlyfuijpopaabr.supabase.co/storage/v1/object/public/ad-creatives/brand/logo-full.png" alt="Open Audiences" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
-    <span class="brand-text" style="display:none;">Content Engine</span>
+    <img class="brand-logo brand-logo-dark" src="https://dpfivetlyfuijpopaabr.supabase.co/storage/v1/object/public/ad-creatives/brand/logo-on-dark.png" alt="Open Audiences" onerror="this.style.display='none';" />
+    <img class="brand-logo brand-logo-light" src="https://dpfivetlyfuijpopaabr.supabase.co/storage/v1/object/public/ad-creatives/brand/logo-full.png" alt="Open Audiences" onerror="this.style.display='none';" />
   </div>
 
   <div class="side-nav-section">
@@ -823,6 +982,17 @@
   </div>
 
   <div class="side-nav-footer">
+    <div class="theme-toggle-row">
+      <span class="theme-toggle-label">
+        <span id="theme-label-icon">🌙</span>
+        <span id="theme-label-text">Dark mode</span>
+      </span>
+      <label class="theme-toggle-switch" title="Toggle light/dark theme">
+        <input type="checkbox" id="theme-toggle-input" onchange="toggleTheme(this.checked)" />
+        <div class="theme-toggle-track"></div>
+        <div class="theme-toggle-knob" id="theme-knob">🌙</div>
+      </label>
+    </div>
     <div class="side-nav-meta" id="meta"></div>
   </div>
 </nav>
@@ -1029,6 +1199,39 @@
 <div class="toast" id="toast"></div>
 
 <script>
+// ───────────────────────────────────────────────
+// Theme Toggle
+// ───────────────────────────────────────────────
+function toggleTheme(isLight) {
+  if (isLight) {
+    document.body.classList.add('light-theme');
+    localStorage.setItem('content-engine-theme', 'light');
+    document.getElementById('theme-label-icon').textContent = '☀️';
+    document.getElementById('theme-label-text').textContent = 'Light mode';
+    document.getElementById('theme-knob').textContent = '☀️';
+  } else {
+    document.body.classList.remove('light-theme');
+    localStorage.setItem('content-engine-theme', 'dark');
+    document.getElementById('theme-label-icon').textContent = '🌙';
+    document.getElementById('theme-label-text').textContent = 'Dark mode';
+    document.getElementById('theme-knob').textContent = '🌙';
+  }
+}
+
+// Apply saved theme on load
+(function() {
+  const saved = localStorage.getItem('content-engine-theme');
+  if (saved === 'light') {
+    document.body.classList.add('light-theme');
+    // Set toggle after DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+      const input = document.getElementById('theme-toggle-input');
+      if (input) input.checked = true;
+      toggleTheme(true);
+    });
+  }
+})();
+
 const SUPABASE_URL = 'https://dpfivetlyfuijpopaabr.supabase.co/storage/v1/object/public/ad-creatives';
 
 const STYLE_NAMES = {
