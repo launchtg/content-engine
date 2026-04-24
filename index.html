@@ -1498,6 +1498,7 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
       <span class="cal-week-label" id="cal-week-label">Loading...</span>
+      <button class="cal-nav-btn" onclick="calWeekOffset=0;renderCalendar();" title="Go to today" style="font-size:11px;font-weight:600;padding:6px 14px;">Today</button>
       <button class="cal-nav-btn" onclick="calNavWeek(1)" title="Next week">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
@@ -2235,17 +2236,17 @@ function renderCalendar() {
   const now = new Date();
   const todayStr = now.toDateString();
 
-  // Get next unposted value post
+  // Get value posts data
   const vpData = window.__VALUE_POSTS_DATA;
-  const unpostedVp = vpData ? (vpData.posts || []).filter(p => !p.posted) : [];
-  let vpIdx = 0;
+  const allVpPosts = vpData ? (vpData.posts || []) : [];
+  const postedVp = allVpPosts.filter(p => p.posted);
+  const unpostedVp = allVpPosts.filter(p => !p.posted);
+  let vpFutureIdx = 0; // only increment for future value post slots
 
-  // Track which schedule slots already got a value post
   const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   days.forEach((date, di) => {
     const isToday = date.toDateString() === todayStr;
-    const isPastDay = date < now && !isToday;
 
     const col = document.createElement('div');
     col.className = `cal-day-col${isToday ? ' today' : ''}`;
@@ -2264,12 +2265,15 @@ function renderCalendar() {
       const isPast = slotDate < now;
       const statusClass = isPast ? 'completed' : 'scheduled';
 
-      // Get value post preview
+      // Only show value post preview for future slots that have content queued
       let preview = '';
-      if (sch.isValuePost && unpostedVp.length > 0) {
-        const vp = unpostedVp[vpIdx % unpostedVp.length];
-        preview = (vp?.text || '').substring(0, 60) + (vp?.text?.length > 60 ? '…' : '');
-        vpIdx++;
+      if (sch.isValuePost) {
+        if (!isPast && vpFutureIdx < unpostedVp.length) {
+          const vp = unpostedVp[vpFutureIdx];
+          preview = (vp?.text || '').substring(0, 60) + (vp?.text?.length > 60 ? '…' : '');
+          vpFutureIdx++;
+        }
+        // Past slots: no preview (already posted or missed)
       }
 
       const timeStr = sch.timeH > 12
