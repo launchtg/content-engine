@@ -1294,6 +1294,63 @@
     .grid-area { padding: 16px; }
     .image-grid { grid-template-columns: 1fr; }
     .posts-grid { grid-template-columns: 1fr; }
+    /* Calendar responsive */
+    .calendar-grid {
+      grid-template-columns: 1fr;
+      height: auto;
+      gap: 10px;
+    }
+    .cal-day-col { min-height: auto; }
+    .cal-slots { gap: 6px; }
+    .cal-slot { padding: 10px 12px; }
+    .cal-slot-label { font-size: 12px; }
+    .cal-slot-time { font-size: 11px; }
+    .cal-slot-preview { font-size: 11px; }
+    .cal-day-header { padding: 12px 14px; text-align: left; display: flex; align-items: center; gap: 10px; }
+    .cal-day-name { margin-bottom: 0; font-size: 12px; }
+    .cal-day-num { font-size: 18px; }
+    /* Meta responsive */
+    .meta-dashboard { grid-template-columns: repeat(2, 1fr); }
+    .meta-campaign-bar { grid-template-columns: 1fr; }
+    .meta-campaign-col:first-child { border-radius: 12px 12px 0 0; }
+    .meta-campaign-col:last-child { border-radius: 0 0 12px 12px; }
+    .meta-funnel { flex-wrap: wrap; }
+    .meta-funnel-step { min-width: 45%; flex: 1 1 45%; }
+    .meta-funnel-step:first-child { border-radius: 12px 0 0 0; }
+    .meta-funnel-step:last-child { border-radius: 0 0 12px 0; }
+    /* YouTube responsive */
+    .yt-upload-form { flex-direction: column; }
+    .yt-upload-form > * { width: 100%; }
+    .channel-stats { grid-template-columns: 1fr; }
+    /* Value posts responsive */
+    .vp-grid { grid-template-columns: 1fr; }
+    /* Section pages */
+    .section-page { padding: 16px; }
+  }
+  @media (max-width: 480px) {
+    .side-nav-brand { padding: 12px 16px; }
+    .side-nav-item { padding: 8px 10px; font-size: 12px; }
+    .calendar-grid { gap: 8px; }
+    .cal-slot { padding: 8px 10px; }
+    .meta-dashboard { grid-template-columns: 1fr; }
+    .meta-funnel-step { min-width: 100%; flex: 1 1 100%; }
+    .meta-funnel-step:first-child,
+    .meta-funnel-step:last-child { border-radius: 0; }
+    .meta-funnel-step:first-child { border-radius: 12px 12px 0 0; }
+    .meta-funnel-step:last-child { border-radius: 0 0 12px 12px; }
+    .section-page { padding: 12px; }
+    .section-page-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  }
+  @media (min-width: 901px) and (max-width: 1200px) {
+    .calendar-grid {
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+    .cal-slot { padding: 6px 7px; }
+    .cal-slot-label { font-size: 9px; }
+    .cal-slot-time { font-size: 8px; }
+    .cal-slot-preview { font-size: 8px; }
+    .cal-day-num { font-size: 18px; }
   }
 </style>
 </head>
