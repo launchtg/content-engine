@@ -2703,7 +2703,7 @@ function renderCalendar() {
       if (sch.isValuePost) {
         if (!isPast && vpIdx < unpostedVp.length) {
           vpText = unpostedVp[vpIdx].text || '';
-          if (di === 0) vpIdx++;
+          vpIdx++;
         } else if (isPast && vpData) {
           const posted = (vpData.posts || []).filter(p => p.posted);
           if (posted.length > 0) vpText = posted[0].text || '';
@@ -2921,7 +2921,154 @@ window.__AD_FACTORY_DATA = {
   }
 };
 
-window.__VALUE_POSTS_DATA = {"source":"youtube","source_video":"The GLP-1 Audience","source_url":"https://www.youtube.com/watch?v=bzPcnZjYZ2s","generated_at":"2026-04-24T10:06:18.731821","rewritten_by":"opus","focus":"hidden monetization opportunities","posts":[{"id":1,"text":"A GLP-1 newsletter found 2,197 C-suite executives in their 48K list. They were pitching pharma sponsors. They should have been selling corporate wellness programs at $5,000 per contract.","type":"standalone","posted":false,"posted_at":null},{"id":2,"text":"General health newsletter CPM: $22. Niche GLP-1 newsletter CPM: $55+. Same industry, 2.5x the price. The difference isn't audience size — it's knowing exactly who's reading.","type":"standalone","posted":true,"posted_at":"2026-04-24T10:13:01.755610"},{"id":3,"text":"40% of a GLP-1 newsletter's readers are over 55. The obvious play is pharma ads. The hidden play? Medicare supplement sponsors, estate planning firms, and luxury retirement communities — categories that pay 3x more.","type":"standalone","posted":false,"posted_at":null},{"id":4,"text":"Your health newsletter subscribers aren't just patients. 4.5% might be executives at companies that need corporate wellness programs. That's not an ad sale — that's a B2B contract worth 10x a banner placement.","type":"standalone","posted":false,"posted_at":null},{"id":5,"text":"Everyone pitches pharma companies. The smart money is in compounding pharmacies — they're ignored by every other newsletter, they solve real reader pain (access + affordability), and they close faster because they have no other channel.","type":"standalone","posted":false,"posted_at":null},{"id":6,"text":"A GLP-1 audience self-selects for high income. They're paying for expensive medications out of pocket. That means they're also buying luxury travel, premium meal delivery, high-end fitness equipment, and financial advisory services. None of those are \"health sponsors.\"","type":"standalone","posted":false,"posted_at":null},{"id":7,"text":"Your health audience takes GLP-1 medications. They're also changing how they eat. Factor meals, protein delivery services, nutrition coaching — three sponsor categories that health newsletters almost never pitch because they seem \"off-topic.\" They're not.","type":"standalone","posted":false,"posted_at":null},{"id":8,"text":"Insurance is confusing. Medications are expensive. GoodRx, HSA platforms, insurance comparison tools — they're desperate to reach this exact audience and no health newsletter is pitching them. The financial pain point is a sponsorship goldmine.","type":"standalone","posted":false,"posted_at":null},{"id":9,"text":"A health newsletter's readers don't just need health products. They need smart scales, body composition trackers, fitness apps, and workout programs. Every adjacent category is a sponsor that your competitors aren't talking to.","type":"standalone","posted":false,"posted_at":null},{"id":10,"text":"2,197 executives in a 48K list. Pull their LinkedIn profiles. Pitch their companies on employee wellness programs. Your email list just became a B2B sales funnel that has nothing to do with selling ads.","type":"standalone","posted":false,"posted_at":null},{"id":11,"text":"The pharma-adjacent play: Your audience takes GLP-1 medications. That means they're also shopping for new wardrobes (body changes), booking travel (new confidence), and investing in skincare. Those sponsors will never find your audience without you.","type":"standalone","posted":false,"posted_at":null},{"id":12,"text":"Life-stage monetization: Same list, three hidden revenue streams. Medicare supplements for the 55+ segment. Family health plans for parents. Luxury wellness retreats for high earners. Each at a 25-40% premium over general health ads.","type":"standalone","posted":false,"posted_at":null},{"id":13,"text":"A newsletter charging $500 per sponsorship wasn't doing it because the audience was worth $500. They just didn't know 35% of readers earned $150K+. One data point changed their entire pricing model.","type":"standalone","posted":false,"posted_at":null},{"id":14,"text":"The biggest monetization opportunities in your newsletter are the ones that have nothing to do with your topic. A health audience that needs financial planning. A tech audience that buys luxury goods. The hidden connections are where the money is.","type":"standalone","posted":false,"posted_at":null},{"id":15,"text":"Most creators sell ad space to the obvious category. The creators making real money find the non-obvious sponsors — the ones who need your audience but would never think to look for a newsletter to reach them. That's the gap. That's the opportunity.","type":"standalone","posted":false,"posted_at":null}],"threads":[{"id":1,"type":"thread","title":"The Hidden Sponsors Your Newsletter Is Missing","posted":false,"posted_at":null,"tweets":["A 48,000-subscriber GLP-1 newsletter was selling pharma ads for $500. Then they looked at WHO was actually reading. What they found opened up revenue streams they never imagined.","Hidden insight #1: 40% of readers were over 55. That's not just a health audience — that's Medicare supplements, estate planning, retirement communities, and luxury travel. None of those are \"health sponsors.\"","Hidden insight #2: 2,197 executives and VPs in the list. Not an ad opportunity — a B2B opportunity. Corporate wellness programs at $5,000 per contract instead of $500 banner ads.","Hidden insight #3: GLP-1 patients are changing their bodies. New wardrobes, new fitness routines, new diets, new confidence. Fashion brands, meal delivery, fitness apps, even travel companies — all hidden sponsors.","Hidden insight #4: The financial pain point. Expensive medications + confusing insurance = readers who desperately need GoodRx, HSA platforms, and insurance comparison tools. Those companies have zero newsletter partnerships right now.","Hidden insight #5: Compounding pharmacies. Every newsletter pitches Novo Nordisk. Nobody pitches the local compounding pharmacy that solves access and affordability — and they close in days, not months.","The lesson: Your most valuable sponsors aren't in your category. They're adjacent to it. The creators who find those hidden connections will always outmonetize the ones selling obvious ads."]},{"id":2,"type":"thread","title":"Why Your Audience Is Worth More Than You Think","posted":false,"posted_at":null,"tweets":["A general health newsletter earns $22 CPM. A niche GLP-1 newsletter earns $55+. Same industry. 2.5x the revenue. The difference isn't better content — it's understanding who's reading.","When your topic involves expensive medications, your audience self-selects for income. You don't need to find wealthy readers — the content does the filtering for you.","But here's what most creators miss: knowing THAT your audience has money is step one. Knowing WHAT ELSE they buy is where the real monetization happens.","A GLP-1 reader isn't just a patient. They're also a meal planner, a gym member, a new wardrobe shopper, and possibly a corporate decision-maker. Each of those is a completely separate sponsor category.","Stop selling \"newsletter ads.\" Start selling \"access to a verified, high-income audience with specific buying behaviors that your competitors can't reach any other way.\"","The gap between $22 and $55 CPM isn't about writing better content. It's about revealing the hidden value in your audience — and selling the opportunities that nobody else can see."]}]};
+window.__VALUE_POSTS_DATA = {
+  "source": "youtube",
+  "source_video": "The GLP-1 Audience",
+  "source_url": "https://www.youtube.com/watch?v=bzPcnZjYZ2s",
+  "generated_at": "2026-04-24T10:06:18.731821",
+  "rewritten_by": "opus",
+  "focus": "hidden monetization opportunities",
+  "posts": [
+    {
+      "id": 1,
+      "text": "A GLP-1 newsletter found 2,197 C-suite executives in their 48K list. They were pitching pharma sponsors. They should have been selling corporate wellness programs at $5,000 per contract.",
+      "type": "standalone",
+      "posted": true,
+      "posted_at": "2026-04-24T14:35:51.257090"
+    },
+    {
+      "id": 2,
+      "text": "General health newsletter CPM: $22. Niche GLP-1 newsletter CPM: $55+. Same industry, 2.5x the price. The difference isn't audience size \u2014 it's knowing exactly who's reading.",
+      "type": "standalone",
+      "posted": true,
+      "posted_at": "2026-04-24T10:13:01.755610"
+    },
+    {
+      "id": 3,
+      "text": "40% of a GLP-1 newsletter's readers are over 55. The obvious play is pharma ads. The hidden play? Medicare supplement sponsors, estate planning firms, and luxury retirement communities \u2014 categories that pay 3x more.",
+      "type": "standalone",
+      "posted": true,
+      "posted_at": "2026-04-24T16:45:46.703713"
+    },
+    {
+      "id": 4,
+      "text": "Your health newsletter subscribers aren't just patients. 4.5% might be executives at companies that need corporate wellness programs. That's not an ad sale \u2014 that's a B2B contract worth 10x a banner placement.",
+      "type": "standalone",
+      "posted": false,
+      "posted_at": null
+    },
+    {
+      "id": 5,
+      "text": "Everyone pitches pharma companies. The smart money is in compounding pharmacies \u2014 they're ignored by every other newsletter, they solve real reader pain (access + affordability), and they close faster because they have no other channel.",
+      "type": "standalone",
+      "posted": false,
+      "posted_at": null
+    },
+    {
+      "id": 6,
+      "text": "A GLP-1 audience self-selects for high income. They're paying for expensive medications out of pocket. That means they're also buying luxury travel, premium meal delivery, high-end fitness equipment, and financial advisory services. None of those are \"health sponsors.\"",
+      "type": "standalone",
+      "posted": false,
+      "posted_at": null
+    },
+    {
+      "id": 7,
+      "text": "Your health audience takes GLP-1 medications. They're also changing how they eat. Factor meals, protein delivery services, nutrition coaching \u2014 three sponsor categories that health newsletters almost never pitch because they seem \"off-topic.\" They're not.",
+      "type": "standalone",
+      "posted": false,
+      "posted_at": null
+    },
+    {
+      "id": 8,
+      "text": "Insurance is confusing. Medications are expensive. GoodRx, HSA platforms, insurance comparison tools \u2014 they're desperate to reach this exact audience and no health newsletter is pitching them. The financial pain point is a sponsorship goldmine.",
+      "type": "standalone",
+      "posted": false,
+      "posted_at": null
+    },
+    {
+      "id": 9,
+      "text": "A health newsletter's readers don't just need health products. They need smart scales, body composition trackers, fitness apps, and workout programs. Every adjacent category is a sponsor that your competitors aren't talking to.",
+      "type": "standalone",
+      "posted": false,
+      "posted_at": null
+    },
+    {
+      "id": 10,
+      "text": "2,197 executives in a 48K list. Pull their LinkedIn profiles. Pitch their companies on employee wellness programs. Your email list just became a B2B sales funnel that has nothing to do with selling ads.",
+      "type": "standalone",
+      "posted": false,
+      "posted_at": null
+    },
+    {
+      "id": 11,
+      "text": "The pharma-adjacent play: Your audience takes GLP-1 medications. That means they're also shopping for new wardrobes (body changes), booking travel (new confidence), and investing in skincare. Those sponsors will never find your audience without you.",
+      "type": "standalone",
+      "posted": false,
+      "posted_at": null
+    },
+    {
+      "id": 12,
+      "text": "Life-stage monetization: Same list, three hidden revenue streams. Medicare supplements for the 55+ segment. Family health plans for parents. Luxury wellness retreats for high earners. Each at a 25-40% premium over general health ads.",
+      "type": "standalone",
+      "posted": false,
+      "posted_at": null
+    },
+    {
+      "id": 13,
+      "text": "A newsletter charging $500 per sponsorship wasn't doing it because the audience was worth $500. They just didn't know 35% of readers earned $150K+. One data point changed their entire pricing model.",
+      "type": "standalone",
+      "posted": false,
+      "posted_at": null
+    },
+    {
+      "id": 14,
+      "text": "The biggest monetization opportunities in your newsletter are the ones that have nothing to do with your topic. A health audience that needs financial planning. A tech audience that buys luxury goods. The hidden connections are where the money is.",
+      "type": "standalone",
+      "posted": false,
+      "posted_at": null
+    },
+    {
+      "id": 15,
+      "text": "Most creators sell ad space to the obvious category. The creators making real money find the non-obvious sponsors \u2014 the ones who need your audience but would never think to look for a newsletter to reach them. That's the gap. That's the opportunity.",
+      "type": "standalone",
+      "posted": false,
+      "posted_at": null
+    }
+  ],
+  "threads": [
+    {
+      "id": 1,
+      "type": "thread",
+      "title": "The Hidden Sponsors Your Newsletter Is Missing",
+      "posted": false,
+      "posted_at": null,
+      "tweets": [
+        "A 48,000-subscriber GLP-1 newsletter was selling pharma ads for $500. Then they looked at WHO was actually reading. What they found opened up revenue streams they never imagined.",
+        "Hidden insight #1: 40% of readers were over 55. That's not just a health audience \u2014 that's Medicare supplements, estate planning, retirement communities, and luxury travel. None of those are \"health sponsors.\"",
+        "Hidden insight #2: 2,197 executives and VPs in the list. Not an ad opportunity \u2014 a B2B opportunity. Corporate wellness programs at $5,000 per contract instead of $500 banner ads.",
+        "Hidden insight #3: GLP-1 patients are changing their bodies. New wardrobes, new fitness routines, new diets, new confidence. Fashion brands, meal delivery, fitness apps, even travel companies \u2014 all hidden sponsors.",
+        "Hidden insight #4: The financial pain point. Expensive medications + confusing insurance = readers who desperately need GoodRx, HSA platforms, and insurance comparison tools. Those companies have zero newsletter partnerships right now.",
+        "Hidden insight #5: Compounding pharmacies. Every newsletter pitches Novo Nordisk. Nobody pitches the local compounding pharmacy that solves access and affordability \u2014 and they close in days, not months.",
+        "The lesson: Your most valuable sponsors aren't in your category. They're adjacent to it. The creators who find those hidden connections will always outmonetize the ones selling obvious ads."
+      ]
+    },
+    {
+      "id": 2,
+      "type": "thread",
+      "title": "Why Your Audience Is Worth More Than You Think",
+      "posted": false,
+      "posted_at": null,
+      "tweets": [
+        "A general health newsletter earns $22 CPM. A niche GLP-1 newsletter earns $55+. Same industry. 2.5x the revenue. The difference isn't better content \u2014 it's understanding who's reading.",
+        "When your topic involves expensive medications, your audience self-selects for income. You don't need to find wealthy readers \u2014 the content does the filtering for you.",
+        "But here's what most creators miss: knowing THAT your audience has money is step one. Knowing WHAT ELSE they buy is where the real monetization happens.",
+        "A GLP-1 reader isn't just a patient. They're also a meal planner, a gym member, a new wardrobe shopper, and possibly a corporate decision-maker. Each of those is a completely separate sponsor category.",
+        "Stop selling \"newsletter ads.\" Start selling \"access to a verified, high-income audience with specific buying behaviors that your competitors can't reach any other way.\"",
+        "The gap between $22 and $55 CPM isn't about writing better content. It's about revealing the hidden value in your audience \u2014 and selling the opportunities that nobody else can see."
+      ]
+    }
+  ]
+};
 
 // ───────────────────────────────────────────────
 // Init
